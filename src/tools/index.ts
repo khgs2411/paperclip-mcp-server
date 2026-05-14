@@ -22,7 +22,8 @@ export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   ) => Promise<unknown>;
 }
 
-export const TOOLS: ToolDefinition[] = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const TOOLS: ToolDefinition<any>[] = [
   agentPatchTool,
   agentSetPermissionsTool,
   routinePatchTool,

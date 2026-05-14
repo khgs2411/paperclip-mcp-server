@@ -15,14 +15,16 @@ const inputSchema = z.object({
   merge: z.boolean().default(false),
 });
 
+type GrantRecord = { permissionKey: string; scope?: Record<string, unknown> | null };
+
 interface AgentDetail {
-  access?: { grants?: Array<{ permissionKey: string; scope?: unknown }> };
+  access?: { grants?: GrantRecord[] };
 }
 
 interface MembersResponse {
   members: Array<{
     id: string;
-    grants?: Array<{ permissionKey: string; scope?: unknown }>;
+    grants?: GrantRecord[];
   }>;
 }
 
@@ -30,7 +32,7 @@ interface MemberRecord {
   id: string;
   principalType: string;
   principalId: string;
-  grants?: Array<{ permissionKey: string; scope?: unknown }>;
+  grants?: GrantRecord[];
 }
 
 export const memberSetGrantsTool: ToolDefinition<typeof inputSchema> = {
@@ -56,12 +58,12 @@ export const memberSetGrantsTool: ToolDefinition<typeof inputSchema> = {
         const found = list.members.find((m) => m.id === input.memberId);
         current = found?.grants ?? [];
       }
-      const byKey = new Map<string, { permissionKey: string; scope?: unknown }>();
+      const byKey = new Map<string, { permissionKey: string; scope?: Record<string, unknown> | null }>();
       for (const g of current) {
-        byKey.set(g.permissionKey, { permissionKey: g.permissionKey, scope: g.scope ?? null });
+        byKey.set(g.permissionKey, { permissionKey: g.permissionKey, scope: g.scope ?? null } as GrantRecord);
       }
       for (const g of input.grants) {
-        byKey.set(g.permissionKey, { permissionKey: g.permissionKey, scope: g.scope ?? null });
+        byKey.set(g.permissionKey, { permissionKey: g.permissionKey, scope: g.scope ?? null } as GrantRecord);
       }
       grantsToSend = Array.from(byKey.values());
     }
