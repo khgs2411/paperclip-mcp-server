@@ -3,6 +3,7 @@ import type { PaperclipClient } from "../client.js";
 import { agentPatchTool } from "./agent-patch.js";
 import { agentSetPermissionsTool } from "./agent-set-permissions.js";
 import { routinePatchTool } from "./routine-patch.js";
+import { routineRunTool } from "./routine-run.js";
 
 export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   name: string;
@@ -14,4 +15,4 @@ export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   ) => Promise<unknown>;
 }
 
-export const TOOLS: ToolDefinition[] = [agentPatchTool, agentSetPermissionsTool, routinePatchTool];
+export const TOOLS: ToolDefinition[] = [agentPatchTool, agentSetPermissionsTool, routinePatchTool, routineRunTool];
