@@ -6,6 +6,9 @@ import { routinePatchTool } from "./routine-patch.js";
 import { routineRunTool } from "./routine-run.js";
 import { issuePatchTool } from "./issue-patch.js";
 import { issueGetFullTool } from "./issue-get-full.js";
+import { issueInteractionsListTool } from "./issue-interactions-list.js";
+import { issueInteractionResolveTool } from "./issue-interaction-resolve.js";
+import { inboxSummaryTool } from "./inbox-summary.js";
 import { skillSyncTool } from "./skill-sync.js";
 import { projectCreateTool } from "./project-create.js";
 import { projectDeleteTool } from "./project-delete.js";
@@ -30,6 +33,9 @@ export const TOOLS: ToolDefinition<any>[] = [
   routineRunTool,
   issuePatchTool,
   issueGetFullTool,
+  issueInteractionsListTool,
+  issueInteractionResolveTool,
+  inboxSummaryTool,
   skillSyncTool,
   projectCreateTool,
   projectDeleteTool,

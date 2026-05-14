@@ -22,7 +22,7 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 `PAPERCLIP_API_BASE` defaults to `http://127.0.0.1:3100` if unset.
 `PAPERCLIP_COMPANY_ID` is optional when the local Paperclip instance has only one company.
 
-## Tools (v0.1)
+## Tools (v0.2)
 
 | Tool | Purpose |
 |------|---------|
@@ -33,10 +33,24 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 | `paperclip_routine_run` | Trigger a manual routine run, optionally wait for completion. |
 | `paperclip_issue_get_full` | Issue + comments + relations in one call. |
 | `paperclip_issue_patch` | Update issue fields not fully covered by the CLI. |
+| `paperclip_issue_interactions_list` | List pending interactions (confirmations, questions) for an issue. |
+| `paperclip_issue_interaction_resolve` | Resolve a pending interaction (accept/reject/respond/cancel). |
+| `paperclip_inbox_summary` | Single-read count of pending interactions, approvals, and unassigned in-review issues. |
 | `paperclip_skill_sync` | Replace or merge an agent's desired skills. |
 | `paperclip_project_create` | Create a project. |
 | `paperclip_project_delete` | Delete a project. |
 | `paperclip_board_channel_append` | Append a Yellow-tier line to `BOARD_CHANNEL.md`. |
+
+### Interaction kind → action routing
+
+`paperclip_issue_interaction_resolve` routes to the correct REST endpoint based on the `action` field. The caller does not need to know the HTTP verb.
+
+| kind | allowed actions | REST endpoint |
+|------|----------------|---------------|
+| `confirmation` | `accept`, `reject` | `POST /api/issues/:id/interactions/:interactionId/{accept,reject}` |
+| `question` | `respond`, `cancel` | `POST /api/issues/:id/interactions/:interactionId/{respond,cancel}` |
+
+Passing an incompatible action returns a `tool_input_error` before any HTTP call is made.
 
 ## Development
 
