@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import type { PaperclipClient } from "../client.js";
+import { agentPatchTool } from "./agent-patch.js";
 
 export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   name: string;
@@ -11,5 +12,4 @@ export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   ) => Promise<unknown>;
 }
 
-// Tools register themselves here. Each tool task appends one entry.
-export const TOOLS: ToolDefinition[] = [];
+export const TOOLS: ToolDefinition[] = [agentPatchTool];
