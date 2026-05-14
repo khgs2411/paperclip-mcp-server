@@ -4,6 +4,7 @@ import { agentPatchTool } from "./agent-patch.js";
 import { agentSetPermissionsTool } from "./agent-set-permissions.js";
 import { routinePatchTool } from "./routine-patch.js";
 import { routineRunTool } from "./routine-run.js";
+import { issuePatchTool } from "./issue-patch.js";
 
 export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   name: string;
@@ -15,4 +16,4 @@ export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   ) => Promise<unknown>;
 }
 
-export const TOOLS: ToolDefinition[] = [agentPatchTool, agentSetPermissionsTool, routinePatchTool, routineRunTool];
+export const TOOLS: ToolDefinition[] = [agentPatchTool, agentSetPermissionsTool, routinePatchTool, routineRunTool, issuePatchTool];
