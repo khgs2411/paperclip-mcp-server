@@ -22,21 +22,21 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 `PAPERCLIP_API_BASE` defaults to `http://127.0.0.1:3100` if unset.
 `PAPERCLIP_COMPANY_ID` is optional when the local Paperclip instance has only one company.
 
-## Tools
+## Tools (v0.1)
 
-| Tool | Description |
-|------|-------------|
-| `paperclip_agent_patch` | Update an agent's mutable fields |
-| `paperclip_agent_set_permissions` | Set agent permission booleans |
-| `paperclip_member_set_grants` | Replace/merge explicit grant set for a member |
-| `paperclip_routine_patch` | Update a routine's metadata |
-| `paperclip_routine_run` | Trigger a manual routine run |
-| `paperclip_issue_get_full` | Get issue + comments in one call |
-| `paperclip_issue_patch` | Update issue fields |
-| `paperclip_skill_sync` | Set or merge agent's desired skills |
-| `paperclip_project_create` | Create a new project |
-| `paperclip_project_delete` | Delete a project |
-| `paperclip_board_channel_append` | Append a Yellow entry to BOARD_CHANNEL.md |
+| Tool | Purpose |
+|------|---------|
+| `paperclip_agent_patch` | Update agent metadata (name, title, role, reportsTo, capabilities, icon). |
+| `paperclip_agent_set_permissions` | Set `canCreateAgents` / `canAssignTasks` on an agent. |
+| `paperclip_member_set_grants` | Replace or merge explicit permission grants on a member. |
+| `paperclip_routine_patch` | Update a routine's metadata. |
+| `paperclip_routine_run` | Trigger a manual routine run, optionally wait for completion. |
+| `paperclip_issue_get_full` | Issue + comments + relations in one call. |
+| `paperclip_issue_patch` | Update issue fields not fully covered by the CLI. |
+| `paperclip_skill_sync` | Replace or merge an agent's desired skills. |
+| `paperclip_project_create` | Create a project. |
+| `paperclip_project_delete` | Delete a project. |
+| `paperclip_board_channel_append` | Append a Yellow-tier line to `BOARD_CHANNEL.md`. |
 
 ## Development
 
@@ -51,5 +51,13 @@ bun run build        # bundle to dist/
 Integration tests (require a live local Paperclip):
 
 ```bash
-PAPERCLIP_API_BASE=http://127.0.0.1:3100 bun run test:integration
+PAPERCLIP_COMPANY_ID=<your-company-uuid> bun run test:integration
+```
+
+## Publish
+
+```bash
+# Set NPM_TOKEN in .env (see .env.example), then:
+bun run prepublishOnly  # typecheck + unit tests + build
+bun publish
 ```
