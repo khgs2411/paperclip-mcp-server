@@ -1,0 +1,55 @@
+# paperclip-mcp-server
+
+A stdio MCP server that exposes a typed tool surface for interacting with a local Paperclip orchestration API. Fills the gaps in the `paperclipai` CLI.
+
+## Install (via Claude Code MCP config)
+
+```json
+{
+  "mcpServers": {
+    "paperclip": {
+      "command": "bunx",
+      "args": ["paperclip-mcp-server@latest"],
+      "env": {
+        "PAPERCLIP_API_BASE": "http://127.0.0.1:3100",
+        "PAPERCLIP_COMPANY_ID": "<your-company-uuid>"
+      }
+    }
+  }
+}
+```
+
+`PAPERCLIP_API_BASE` defaults to `http://127.0.0.1:3100` if unset.
+`PAPERCLIP_COMPANY_ID` is optional when the local Paperclip instance has only one company.
+
+## Tools
+
+| Tool | Description |
+|------|-------------|
+| `paperclip_agent_patch` | Update an agent's mutable fields |
+| `paperclip_agent_set_permissions` | Set agent permission booleans |
+| `paperclip_member_set_grants` | Replace/merge explicit grant set for a member |
+| `paperclip_routine_patch` | Update a routine's metadata |
+| `paperclip_routine_run` | Trigger a manual routine run |
+| `paperclip_issue_get_full` | Get issue + comments in one call |
+| `paperclip_issue_patch` | Update issue fields |
+| `paperclip_skill_sync` | Set or merge agent's desired skills |
+| `paperclip_project_create` | Create a new project |
+| `paperclip_project_delete` | Delete a project |
+| `paperclip_board_channel_append` | Append a Yellow entry to BOARD_CHANNEL.md |
+
+## Development
+
+```bash
+bun install
+bun run dev          # run server in stdio mode
+bun test             # unit tests
+bun run typecheck
+bun run build        # bundle to dist/
+```
+
+Integration tests (require a live local Paperclip):
+
+```bash
+PAPERCLIP_API_BASE=http://127.0.0.1:3100 bun run test:integration
+```

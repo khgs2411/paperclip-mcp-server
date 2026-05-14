@@ -1,0 +1,36 @@
+{
+  "name": "paperclip-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for the local Paperclip orchestration API. Fills gaps in the paperclipai CLI for Claude Code sessions.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "paperclip-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun --banner '#!/usr/bin/env bun'",
+    "dev": "bun run src/index.ts",
+    "test": "bun test tests/client.test.ts tests/shared tests/tools",
+    "test:integration": "bun test tests/integration",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run typecheck && bun test tests/client.test.ts tests/shared tests/tools && bun run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@paperclipai/shared": "2026.513.0",
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.25.2"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.14",
+    "typescript": "^6.0.3"
+  }
+}
