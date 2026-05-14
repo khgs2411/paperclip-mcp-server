@@ -7,17 +7,14 @@ import {
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { PaperclipClient } from "./client.js";
 import { TOOLS } from "./tools/index.js";
-import {
-  PaperclipApiError,
-  PaperclipUnreachableError,
-  ToolInputError,
-  toToolErrorPayload,
-} from "./shared/errors.js";
+import { handleCallTool } from "./handler.js";
 
 const apiBase = process.env["PAPERCLIP_API_BASE"] ?? "http://127.0.0.1:3100";
 const defaultCompanyId = process.env["PAPERCLIP_COMPANY_ID"];
 
 const client = new PaperclipClient({ apiBase, defaultCompanyId });
+
+let paperclipisHealthy = false;
 
 const server = new Server(
   { name: "paperclip-mcp-server", version: "0.1.0" },
@@ -32,55 +29,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   })),
 }));
 
-server.setRequestHandler(CallToolRequestSchema, async (req) => {
-  const tool = TOOLS.find((t) => t.name === req.params.name);
-  if (!tool) {
-    return {
-      isError: true,
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify({
-            code: "tool_input_error",
-            field: "name",
-            constraint: `unknown tool '${req.params.name}'`,
-            message: "tool not found",
-          }),
-        },
-      ],
-    };
-  }
-
-  let parsed: unknown;
-  try {
-    parsed = tool.inputSchema.parse(req.params.arguments ?? {});
-  } catch (err) {
-    const issue = (err as { issues?: Array<{ path: Array<string | number>; message: string }> }).issues?.[0];
-    const payload = toToolErrorPayload(
-      new ToolInputError(issue?.path.join(".") ?? "input", issue?.message ?? "invalid"),
-    );
-    return { isError: true, content: [{ type: "text", text: JSON.stringify(payload) }] };
-  }
-
-  try {
-    const result = await tool.handler(parsed, { client });
-    return { content: [{ type: "text", text: JSON.stringify(result) }] };
-  } catch (err) {
-    if (
-      err instanceof PaperclipApiError ||
-      err instanceof PaperclipUnreachableError ||
-      err instanceof ToolInputError
-    ) {
-      return { isError: true, content: [{ type: "text", text: JSON.stringify(toToolErrorPayload(err)) }] };
-    }
-    return {
-      isError: true,
-      content: [
-        { type: "text", text: JSON.stringify({ code: "internal_error", message: (err as Error).message }) },
-      ],
-    };
-  }
-});
+server.setRequestHandler(CallToolRequestSchema, async (req) =>
+  handleCallTool(req.params.name, req.params.arguments, client, paperclipisHealthy),
+);
 
 const transport = new StdioServerTransport();
 await server.connect(transport);
+paperclipisHealthy = await client.healthCheck();
