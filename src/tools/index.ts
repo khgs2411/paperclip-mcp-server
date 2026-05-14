@@ -7,6 +7,8 @@ import { routineRunTool } from "./routine-run.js";
 import { issuePatchTool } from "./issue-patch.js";
 import { issueGetFullTool } from "./issue-get-full.js";
 import { skillSyncTool } from "./skill-sync.js";
+import { projectCreateTool } from "./project-create.js";
+import { projectDeleteTool } from "./project-delete.js";
 
 export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   name: string;
@@ -18,4 +20,14 @@ export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   ) => Promise<unknown>;
 }
 
-export const TOOLS: ToolDefinition[] = [agentPatchTool, agentSetPermissionsTool, routinePatchTool, routineRunTool, issuePatchTool, issueGetFullTool, skillSyncTool];
+export const TOOLS: ToolDefinition[] = [
+  agentPatchTool,
+  agentSetPermissionsTool,
+  routinePatchTool,
+  routineRunTool,
+  issuePatchTool,
+  issueGetFullTool,
+  skillSyncTool,
+  projectCreateTool,
+  projectDeleteTool,
+];
