@@ -9,6 +9,7 @@ import { issueGetFullTool } from "./issue-get-full.js";
 import { skillSyncTool } from "./skill-sync.js";
 import { projectCreateTool } from "./project-create.js";
 import { projectDeleteTool } from "./project-delete.js";
+import { memberSetGrantsTool } from "./member-set-grants.js";
 
 export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   name: string;
@@ -30,4 +31,5 @@ export const TOOLS: ToolDefinition[] = [
   skillSyncTool,
   projectCreateTool,
   projectDeleteTool,
+  memberSetGrantsTool,
 ];
