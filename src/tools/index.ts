@@ -9,6 +9,33 @@ import { issueGetFullTool } from "./issue-get-full.js";
 import { issueInteractionsListTool } from "./issue-interactions-list.js";
 import { issueInteractionResolveTool } from "./issue-interaction-resolve.js";
 import { inboxSummaryTool } from "./inbox-summary.js";
+// Group A — Issues lifecycle (CRUD)
+import { issueListTool } from "./issue-list.js";
+import { issueCountTool } from "./issue-count.js";
+import { issueSearchTool } from "./issue-search.js";
+import { issueCreateTool } from "./issue-create.js";
+import { issueCreateChildTool } from "./issue-create-child.js";
+import { issueDeleteTool } from "./issue-delete.js";
+// Group B — Issue comments
+import { issueCommentsListTool } from "./issue-comments-list.js";
+import { issueCommentAddTool } from "./issue-comment-add.js";
+import { issueCommentDeleteTool } from "./issue-comment-delete.js";
+// Group C — Issue interactions (per-interaction lifecycle)
+import { issueInteractionCreateTool } from "./issue-interaction-create.js";
+import { issueInteractionRespondTool } from "./issue-interaction-respond.js";
+import { issueInteractionAcceptTool } from "./issue-interaction-accept.js";
+import { issueInteractionRejectTool } from "./issue-interaction-reject.js";
+import { issueInteractionCancelTool } from "./issue-interaction-cancel.js";
+// Group D — Issue workflow (checkout, activity, documents, inbox markers)
+import { issueCheckoutTool } from "./issue-checkout.js";
+import { issueReleaseTool } from "./issue-release.js";
+import { issueActivityTool } from "./issue-activity.js";
+import { issueDocumentsListTool } from "./issue-documents-list.js";
+import { issueDocumentGetTool } from "./issue-document-get.js";
+import { issueDocumentPutTool } from "./issue-document-put.js";
+import { issueDocumentDeleteTool } from "./issue-document-delete.js";
+import { issueReadMarkTool } from "./issue-read-mark.js";
+import { issueInboxArchiveTool } from "./issue-inbox-archive.js";
 import { skillSyncTool } from "./skill-sync.js";
 import { projectCreateTool } from "./project-create.js";
 import { projectDeleteTool } from "./project-delete.js";
@@ -94,6 +121,33 @@ export const TOOLS: ToolDefinition<any>[] = [
   projectCreateTool,
   projectDeleteTool,
   memberSetGrantsTool,
+  // Group A — Issues lifecycle (CRUD)
+  issueListTool,
+  issueCountTool,
+  issueSearchTool,
+  issueCreateTool,
+  issueCreateChildTool,
+  issueDeleteTool,
+  // Group B — Issue comments
+  issueCommentsListTool,
+  issueCommentAddTool,
+  issueCommentDeleteTool,
+  // Group C — Issue interactions
+  issueInteractionCreateTool,
+  issueInteractionRespondTool,
+  issueInteractionAcceptTool,
+  issueInteractionRejectTool,
+  issueInteractionCancelTool,
+  // Group D — Issue workflow
+  issueCheckoutTool,
+  issueReleaseTool,
+  issueActivityTool,
+  issueDocumentsListTool,
+  issueDocumentGetTool,
+  issueDocumentPutTool,
+  issueDocumentDeleteTool,
+  issueReadMarkTool,
+  issueInboxArchiveTool,
   // Group E — Inbox (agent-scoped)
   meWhoamiTool,
   inboxMineTool,
