@@ -5,8 +5,14 @@ import { PaperclipClient } from "../../src/client.js";
 describe("skill_delete", () => {
   beforeEach(() => mock.restore());
 
+  it("validates inputSchema — skillId required, confirm must be true", () => {
+    expect(skillDeleteTool.inputSchema.safeParse({}).success).toBe(false);
+    expect(skillDeleteTool.inputSchema.safeParse({ skillId: "S1" }).success).toBe(false);
+    expect(skillDeleteTool.inputSchema.safeParse({ skillId: "S1", confirm: true }).success).toBe(true);
+  });
+
   it("rejects when confirm is not true", () => {
-    const parsed = skillDeleteTool.inputSchema.safeParse({ skillId: "S1" });
+    const parsed = skillDeleteTool.inputSchema.safeParse({ skillId: "S1", confirm: false });
     expect(parsed.success).toBe(false);
   });
 
@@ -18,11 +24,16 @@ describe("skill_delete", () => {
     expect(result).toEqual({ deleted: true, id: "S1" });
   });
 
-  it("propagates errors from client.request", async () => {
+  it("handler throws ToolInputError if called without confirm via bypass", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
-    spyOn(client, "request").mockRejectedValueOnce(new Error("forbidden"));
-    await expect(
-      skillDeleteTool.handler({ skillId: "S1", confirm: true }, { client }),
-    ).rejects.toThrow("forbidden");
+    // @ts-expect-error — simulating bypass
+    await expect(skillDeleteTool.handler({ skillId: "S1" }, { client })).rejects.toThrow("confirm");
+  });
+
+  it("uses overridden companyId when provided", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    const spy = spyOn(client, "request").mockResolvedValueOnce({});
+    await skillDeleteTool.handler({ skillId: "S1", confirm: true, companyId: "C2" }, { client });
+    expect(spy).toHaveBeenCalledWith("DELETE", "/api/companies/C2/skills/S1");
   });
 });

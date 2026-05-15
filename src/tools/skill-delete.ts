@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ToolDefinition } from "./index.js";
+import { ToolInputError } from "../shared/errors.js";
 
 const inputSchema = z.object({
   skillId: z.string().min(1).describe("ID of the company-level skill to delete."),
@@ -13,6 +14,9 @@ export const skillDeleteTool: ToolDefinition<typeof inputSchema> = {
     "Delete a company-level skill by ID. Requires confirm: true. This removes the skill from the company skill catalog; agents that had this skill assigned will lose access to it.",
   inputSchema,
   handler: async (input, { client }) => {
+    if (!input.confirm) {
+      throw new ToolInputError("confirm", "must be true to confirm deletion");
+    }
     const companyId = client.resolveCompanyId(input.companyId);
     await client.request(
       "DELETE",
