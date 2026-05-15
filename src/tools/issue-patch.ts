@@ -11,7 +11,8 @@ const inputSchema = z
     description: z.string().optional(),
     status: z.string().optional(),
     priority: z.enum(["critical", "high", "medium", "low"]).optional(),
-    assigneeAgentId: z.string().nullable().optional(),
+    assigneeAgentId: z.string().nullable().optional().describe("Agent UUID to assign, or null to clear the agent assignee."),
+    assigneeUserId: z.string().nullable().optional().describe("User UUID to assign, or null to clear the user assignee. Pass null alongside assigneeAgentId to transfer from a user to an agent in one call."),
     projectId: z.string().nullable().optional(),
   })
   .refine(
@@ -21,6 +22,7 @@ const inputSchema = z
       v.status !== undefined ||
       v.priority !== undefined ||
       v.assigneeAgentId !== undefined ||
+      v.assigneeUserId !== undefined ||
       v.projectId !== undefined,
     { message: "at least one patchable field must be provided", path: ["_patch"] },
   );
@@ -28,7 +30,7 @@ const inputSchema = z
 export const issuePatchTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_issue_patch",
   description:
-    "Update an issue's title, description, status, priority, assignee, or projectId. Accepts UUID or TOP-N style identifier.",
+    "Update an issue's title, description, status, priority, assignee (agent or user), or projectId. To transfer from a user assignee to an agent, pass assigneeUserId: null and assigneeAgentId together. Accepts UUID or TOP-N style identifier.",
   inputSchema,
   handler: async (input, { client }) => {
     const { issueIdOrIdentifier, ...patch } = input;
@@ -44,6 +46,7 @@ export const issuePatchTool: ToolDefinition<typeof inputSchema> = {
       priority: raw["priority"],
       title: raw["title"],
       assigneeAgentId: raw["assigneeAgentId"],
+      assigneeUserId: raw["assigneeUserId"],
     };
   },
 };
