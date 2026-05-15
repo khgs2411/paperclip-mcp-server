@@ -73,7 +73,7 @@ import { agentInstructionsPatchTool } from "./agent-instructions-patch.js";
 import { agentInstructionsFileGetTool } from "./agent-instructions-file-get.js";
 import { agentInstructionsFilePutTool } from "./agent-instructions-file-put.js";
 import { agentInstructionsFileDeleteTool } from "./agent-instructions-file-delete.js";
-// Group H — Projects, members, labels, goals
+// Group H — Projects, members, labels, goals, skills
 import { projectListTool } from "./project-list.js";
 import { projectGetTool } from "./project-get.js";
 import { projectPatchTool } from "./project-patch.js";
@@ -86,6 +86,9 @@ import { goalGetTool } from "./goal-get.js";
 import { goalCreateTool } from "./goal-create.js";
 import { goalPatchTool } from "./goal-patch.js";
 import { goalDeleteTool } from "./goal-delete.js";
+import { skillListTool } from "./skill-list.js";
+import { skillGetTool } from "./skill-get.js";
+import { skillDeleteTool } from "./skill-delete.js";
 // Group I — Board observability
 import { dashboardGetTool } from "./dashboard-get.js";
 import { activityCompanyTool } from "./activity-company.js";
@@ -196,6 +199,9 @@ export const TOOLS: ToolDefinition<any>[] = [
   goalCreateTool,
   goalPatchTool,
   goalDeleteTool,
+  skillListTool,
+  skillGetTool,
+  skillDeleteTool,
   // Group I — Board observability
   dashboardGetTool,
   activityCompanyTool,
