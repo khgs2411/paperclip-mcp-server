@@ -34,8 +34,8 @@ import { issueDocumentsListTool } from "./issue-documents-list.js";
 import { issueDocumentGetTool } from "./issue-document-get.js";
 import { issueDocumentPutTool } from "./issue-document-put.js";
 import { issueDocumentDeleteTool } from "./issue-document-delete.js";
-import { issueReadMarkTool } from "./issue-read-mark.js";
-import { issueInboxArchiveTool } from "./issue-inbox-archive.js";
+import { issueReadMarkTool, issueReadUnmarkTool } from "./issue-read-mark.js";
+import { issueInboxArchiveTool, issueInboxUnarchiveTool } from "./issue-inbox-archive.js";
 import { skillSyncTool } from "./skill-sync.js";
 import { projectCreateTool } from "./project-create.js";
 import { projectDeleteTool } from "./project-delete.js";
@@ -147,7 +147,9 @@ export const TOOLS: ToolDefinition<any>[] = [
   issueDocumentPutTool,
   issueDocumentDeleteTool,
   issueReadMarkTool,
+  issueReadUnmarkTool,
   issueInboxArchiveTool,
+  issueInboxUnarchiveTool,
   // Group E — Inbox (agent-scoped)
   meWhoamiTool,
   inboxMineTool,
