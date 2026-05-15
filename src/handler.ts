@@ -14,8 +14,10 @@ export async function handleCallTool(
   toolName: string,
   args: unknown,
   client: PaperclipClient,
-  isHealthy: boolean,
+  getHealth: () => Promise<boolean>,
+  invalidateHealth: () => void,
 ): Promise<CallToolResult> {
+  const isHealthy = await getHealth();
   if (!isHealthy) {
     return {
       isError: true,
@@ -65,11 +67,15 @@ export async function handleCallTool(
     const result = await tool.handler(parsed, { client });
     return { content: [{ type: "text", text: JSON.stringify(result) }] };
   } catch (err) {
-    if (
-      err instanceof PaperclipApiError ||
-      err instanceof PaperclipUnreachableError ||
-      err instanceof ToolInputError
-    ) {
+    if (err instanceof PaperclipApiError) {
+      // B3: 5xx responses mean Paperclip may be unhealthy — invalidate so next call re-checks
+      if (err.statusCode >= 500) invalidateHealth();
+      return {
+        isError: true,
+        content: [{ type: "text", text: JSON.stringify(toToolErrorPayload(err)) }],
+      };
+    }
+    if (err instanceof PaperclipUnreachableError || err instanceof ToolInputError) {
       return {
         isError: true,
         content: [{ type: "text", text: JSON.stringify(toToolErrorPayload(err)) }],
