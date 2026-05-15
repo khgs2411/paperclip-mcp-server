@@ -93,6 +93,7 @@ import { skillDeleteTool } from "./skill-delete.js";
 import { dashboardGetTool } from "./dashboard-get.js";
 import { activityCompanyTool } from "./activity-company.js";
 import { sidebarBadgesTool } from "./sidebar-badges.js";
+import { healthCheckTool } from "./health-check.js";
 // Group J — Routines
 import { routineListTool } from "./routine-list.js";
 import { routineGetTool } from "./routine-get.js";
@@ -206,6 +207,7 @@ export const TOOLS: ToolDefinition<any>[] = [
   dashboardGetTool,
   activityCompanyTool,
   sidebarBadgesTool,
+  healthCheckTool,
   // Group J — Routines
   routineListTool,
   routineGetTool,
