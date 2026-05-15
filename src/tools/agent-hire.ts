@@ -12,7 +12,7 @@ const inputSchema = z.object({
 
 export const agentHireTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_hire",
-  description: "Initiate a hire request for a new agent in a company.",
+  description: "Submit an agent hire request for the company.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
@@ -22,11 +22,6 @@ export const agentHireTool: ToolDefinition<typeof inputSchema> = {
       `/api/companies/${encodeURIComponent(companyId)}/agent-hires`,
       body,
     )) as Record<string, unknown>;
-
-    return {
-      id: raw["id"],
-      name: raw["name"],
-      status: raw["status"],
-    };
+    return { id: raw["id"], name: raw["name"], status: raw["status"] };
   },
 };

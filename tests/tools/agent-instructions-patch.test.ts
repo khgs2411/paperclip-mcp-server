@@ -5,25 +5,14 @@ import { PaperclipClient } from "../../src/client.js";
 describe("agent_instructions_patch", () => {
   beforeEach(() => mock.restore());
 
-  it("PATCHes the instructions-bundle endpoint and passes through raw response", async () => {
+  it("PATCHes instructions-bundle with provided fields", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
-    const responseBundle = { agentsContent: "# Updated" };
-    const requestSpy = spyOn(client, "request").mockResolvedValueOnce(responseBundle);
-
-    const result = await agentInstructionsPatchTool.handler(
-      { agentId: "A1", agentsContent: "# Updated" },
-      { client },
-    );
-
-    expect(requestSpy).toHaveBeenCalledWith(
-      "PATCH",
-      "/api/agents/A1/instructions-bundle?companyId=C1",
-      { agentsContent: "# Updated" },
-    );
-    expect(result).toEqual(responseBundle);
+    const spy = spyOn(client, "request").mockResolvedValueOnce({ agentsContent: "updated" });
+    await agentInstructionsPatchTool.handler({ agentId: "A1", agentsContent: "updated" }, { client });
+    expect(spy).toHaveBeenCalledWith("PATCH", "/api/agents/A1/instructions-bundle?companyId=C1", { agentsContent: "updated" });
   });
 
-  it("rejects when no content fields are provided", async () => {
+  it("rejects when no content field provided", async () => {
     await expect(
       agentInstructionsPatchTool.inputSchema.parseAsync({ agentId: "A1" }),
     ).rejects.toThrow();

@@ -3,23 +3,20 @@ import type { ToolDefinition } from "./index.js";
 
 const inputSchema = z.object({
   routineId: z.string().min(1),
-  companyId: z
-    .string()
-    .optional()
-    .describe("Company ID (defaults to PAPERCLIP_COMPANY_ID env var)"),
-  limit: z.number().int().positive().optional(),
+  companyId: z.string().optional(),
+  limit: z.number().int().min(1).max(100).optional(),
 });
 
 export const routineRunsListTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_routine_runs_list",
-  description: "Returns all runs for a given routine ID.",
+  description: "List execution runs for a routine.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
-    const limitPart = input.limit !== undefined ? `&limit=${input.limit}` : "";
+    const qs = input.limit !== undefined ? `?companyId=${encodeURIComponent(companyId)}&limit=${input.limit}` : `?companyId=${encodeURIComponent(companyId)}`;
     return client.request(
       "GET",
-      `/api/routines/${encodeURIComponent(input.routineId)}/runs?companyId=${encodeURIComponent(companyId)}${limitPart}`,
+      `/api/routines/${encodeURIComponent(input.routineId)}/runs${qs}`,
     );
   },
 };

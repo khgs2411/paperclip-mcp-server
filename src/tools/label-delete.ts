@@ -9,7 +9,7 @@ const inputSchema = z.object({
 
 export const labelDeleteTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_label_delete",
-  description: "Delete a label by id. Requires confirm: true.",
+  description: "Delete a label by ID. Requires confirm: true to prevent accidental deletion.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);

@@ -15,6 +15,7 @@ export const agentPauseTool: ToolDefinition<typeof inputSchema> = {
     await client.request(
       "POST",
       `/api/agents/${encodeURIComponent(input.agentId)}/pause?companyId=${encodeURIComponent(companyId)}`,
+      {},
     );
     return { agentId: input.agentId, paused: true };
   },

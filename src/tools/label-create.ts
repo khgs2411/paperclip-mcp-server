@@ -7,12 +7,6 @@ const inputSchema = z.object({
   color: z.string().optional(),
 });
 
-interface LabelRaw {
-  id: string;
-  name: string;
-  color?: string;
-}
-
 export const labelCreateTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_label_create",
   description: "Create a new label for the company.",
@@ -25,7 +19,7 @@ export const labelCreateTool: ToolDefinition<typeof inputSchema> = {
       "POST",
       `/api/companies/${encodeURIComponent(companyId)}/labels`,
       body,
-    )) as LabelRaw;
-    return { id: raw.id, name: raw.name, color: raw.color };
+    )) as Record<string, unknown>;
+    return { id: raw["id"], name: raw["name"], color: raw["color"] };
   },
 };

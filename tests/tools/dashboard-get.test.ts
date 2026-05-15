@@ -5,12 +5,12 @@ import { PaperclipClient } from "../../src/client.js";
 describe("dashboard_get", () => {
   beforeEach(() => mock.restore());
 
-  it("GETs /api/companies/:cid/dashboard and passes through the response", async () => {
+  it("GETs company dashboard and returns pass-through", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
-    const payload = { widgets: [], updatedAt: "2026-05-15" };
-    const spy = spyOn(client, "request").mockResolvedValueOnce(payload);
+    const dashboard = { totalIssues: 10, inProgress: 3 };
+    const spy = spyOn(client, "request").mockResolvedValueOnce(dashboard);
     const result = await dashboardGetTool.handler({}, { client });
     expect(spy).toHaveBeenCalledWith("GET", "/api/companies/C1/dashboard");
-    expect(result).toEqual(payload);
+    expect(result).toEqual(dashboard);
   });
 });

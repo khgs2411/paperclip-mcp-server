@@ -5,12 +5,6 @@ const inputSchema = z.object({
   companyId: z.string().optional(),
 });
 
-interface LabelRaw {
-  id: string;
-  name: string;
-  color?: string;
-}
-
 export const labelListTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_label_list",
   description: "List all labels for the company.",
@@ -20,7 +14,7 @@ export const labelListTool: ToolDefinition<typeof inputSchema> = {
     const raw = (await client.request(
       "GET",
       `/api/companies/${encodeURIComponent(companyId)}/labels`,
-    )) as LabelRaw[];
-    return raw.map((l) => ({ id: l.id, name: l.name, color: l.color }));
+    )) as Array<Record<string, unknown>>;
+    return raw.map((l) => ({ id: l["id"], name: l["name"], color: l["color"] }));
   },
 };

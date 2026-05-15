@@ -8,13 +8,14 @@ const inputSchema = z.object({
 
 export const agentResumeTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_resume",
-  description: "Resume a paused agent, allowing it to pick up new work.",
+  description: "Resume a paused agent.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
     await client.request(
       "POST",
       `/api/agents/${encodeURIComponent(input.agentId)}/resume?companyId=${encodeURIComponent(companyId)}`,
+      {},
     );
     return { agentId: input.agentId, resumed: true };
   },

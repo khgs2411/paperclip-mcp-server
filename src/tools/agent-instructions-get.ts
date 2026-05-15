@@ -8,7 +8,7 @@ const inputSchema = z.object({
 
 export const agentInstructionsGetTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_instructions_get",
-  description: "Fetch the full instructions bundle for an agent. Returns the raw bundle response.",
+  description: "Get an agent's instructions bundle (AGENTS.md, HEARTBEAT.md, SOUL.md, TOOLS.md).",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);

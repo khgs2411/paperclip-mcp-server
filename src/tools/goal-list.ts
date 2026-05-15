@@ -5,12 +5,6 @@ const inputSchema = z.object({
   companyId: z.string().optional(),
 });
 
-interface GoalRaw {
-  id: string;
-  title: string;
-  status: string;
-}
-
 export const goalListTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_goal_list",
   description: "List all goals for the company.",
@@ -20,7 +14,7 @@ export const goalListTool: ToolDefinition<typeof inputSchema> = {
     const raw = (await client.request(
       "GET",
       `/api/companies/${encodeURIComponent(companyId)}/goals`,
-    )) as GoalRaw[];
-    return raw.map((g) => ({ id: g.id, title: g.title, status: g.status }));
+    )) as Array<Record<string, unknown>>;
+    return raw.map((g) => ({ id: g["id"], title: g["title"], status: g["status"] }));
   },
 };

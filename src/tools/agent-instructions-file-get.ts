@@ -9,7 +9,7 @@ const inputSchema = z.object({
 
 export const agentInstructionsFileGetTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_instructions_file_get",
-  description: "Fetch a single file from an agent's instructions bundle by path.",
+  description: "Get a single file from an agent's instructions bundle by file path.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
@@ -17,10 +17,6 @@ export const agentInstructionsFileGetTool: ToolDefinition<typeof inputSchema> = 
       "GET",
       `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}&filePath=${encodeURIComponent(input.filePath)}`,
     )) as Record<string, unknown>;
-
-    return {
-      filePath: raw["filePath"] ?? input.filePath,
-      content: raw["content"] as string,
-    };
+    return { filePath: raw["filePath"] ?? input.filePath, content: raw["content"] };
   },
 };

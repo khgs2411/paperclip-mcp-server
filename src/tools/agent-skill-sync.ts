@@ -11,7 +11,7 @@ const inputSchema = z.object({
 export const agentSkillSyncTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_skill_sync",
   description:
-    "Set or merge an agent's desiredSkills list. mode='replace' overwrites; mode='merge' (default) unions with existing skills fetched from /api/agents/:id.",
+    "Set or merge an agent's desiredSkills list. mode='replace' overwrites; mode='merge' (default) unions with existing skills. v0.3 rename of paperclip_skill_sync.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);

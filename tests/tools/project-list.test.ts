@@ -5,10 +5,10 @@ import { PaperclipClient } from "../../src/client.js";
 describe("project_list", () => {
   beforeEach(() => mock.restore());
 
-  it("GETs /api/companies/:cid/projects and returns mapped array", async () => {
+  it("GETs company projects and returns compact array", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
     const spy = spyOn(client, "request").mockResolvedValueOnce([
-      { id: "P1", name: "Alpha", status: "active", urlKey: "alpha" },
+      { id: "P1", name: "Alpha", status: "active", urlKey: "alpha", extra: "ignored" },
     ]);
     const result = await projectListTool.handler({}, { client });
     expect(spy).toHaveBeenCalledWith("GET", "/api/companies/C1/projects");

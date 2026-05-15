@@ -9,12 +9,12 @@ const inputSchema = z.object({
 
 export const agentWakeupTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_wakeup",
-  description: "Trigger a wakeup signal for an agent, optionally scoped to a specific issue.",
+  description: "Wake an agent, optionally scoped to a specific issue.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
     const body: Record<string, unknown> = {};
-    if (input.issueId !== undefined) body["issueId"] = input.issueId;
+    if (input.issueId) body["issueId"] = input.issueId;
     await client.request(
       "POST",
       `/api/agents/${encodeURIComponent(input.agentId)}/wakeup?companyId=${encodeURIComponent(companyId)}`,

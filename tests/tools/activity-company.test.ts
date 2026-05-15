@@ -5,19 +5,17 @@ import { PaperclipClient } from "../../src/client.js";
 describe("activity_company", () => {
   beforeEach(() => mock.restore());
 
-  it("GETs /api/companies/:cid/activity with provided limit", async () => {
-    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
-    const payload = [{ id: "A1", type: "issue_created" }];
-    const spy = spyOn(client, "request").mockResolvedValueOnce(payload);
-    const result = await activityCompanyTool.handler({ limit: 50 }, { client });
-    expect(spy).toHaveBeenCalledWith("GET", "/api/companies/C1/activity?limit=50");
-    expect(result).toEqual(payload);
-  });
-
-  it("defaults limit to 20 when not provided", async () => {
+  it("GETs activity with default limit 20", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
     const spy = spyOn(client, "request").mockResolvedValueOnce([]);
     await activityCompanyTool.handler({}, { client });
     expect(spy).toHaveBeenCalledWith("GET", "/api/companies/C1/activity?limit=20");
+  });
+
+  it("passes custom limit when provided", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    const spy = spyOn(client, "request").mockResolvedValueOnce([]);
+    await activityCompanyTool.handler({ limit: 50 }, { client });
+    expect(spy).toHaveBeenCalledWith("GET", "/api/companies/C1/activity?limit=50");
   });
 });

@@ -3,15 +3,12 @@ import type { ToolDefinition } from "./index.js";
 
 const inputSchema = z.object({
   routineId: z.string().min(1),
-  companyId: z
-    .string()
-    .optional()
-    .describe("Company ID (defaults to PAPERCLIP_COMPANY_ID env var)"),
+  companyId: z.string().optional(),
 });
 
 export const routineGetTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_routine_get",
-  description: "Returns the full routine response for a given routine ID.",
+  description: "Get a single routine by ID.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);

@@ -6,23 +6,16 @@ const inputSchema = z.object({
   companyId: z.string().optional(),
 });
 
-interface GoalRaw {
-  id: string;
-  title: string;
-  status: string;
-  description?: string;
-}
-
 export const goalGetTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_goal_get",
-  description: "Get a goal by id.",
+  description: "Get a single goal by ID.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
     const raw = (await client.request(
       "GET",
       `/api/goals/${encodeURIComponent(input.goalId)}?companyId=${encodeURIComponent(companyId)}`,
-    )) as GoalRaw;
-    return { id: raw.id, title: raw.title, status: raw.status, description: raw.description };
+    )) as Record<string, unknown>;
+    return { id: raw["id"], title: raw["title"], status: raw["status"], description: raw["description"] ?? null };
   },
 };

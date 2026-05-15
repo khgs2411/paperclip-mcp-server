@@ -21,8 +21,7 @@ const inputSchema = z
 
 export const agentInstructionsPatchTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_instructions_patch",
-  description:
-    "Patch one or more sections of an agent's instructions bundle. At least one content field must be provided.",
+  description: "Patch an agent's instructions bundle. Provide at least one content field.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);

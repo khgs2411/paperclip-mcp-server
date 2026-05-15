@@ -9,15 +9,10 @@ const inputSchema = z
     description: z.string().optional(),
     status: z.string().optional(),
   })
-  .refine((d) => d.title !== undefined || d.description !== undefined || d.status !== undefined, {
-    message: "At least one of title, description, or status must be provided",
+  .refine((v) => v.title !== undefined || v.description !== undefined || v.status !== undefined, {
+    message: "at least one of title, description, or status must be provided",
+    path: ["_patch"],
   });
-
-interface GoalRaw {
-  id: string;
-  title: string;
-  status: string;
-}
 
 export const goalPatchTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_goal_patch",
@@ -25,15 +20,12 @@ export const goalPatchTool: ToolDefinition<typeof inputSchema> = {
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
-    const body: Record<string, unknown> = {};
-    if (input.title !== undefined) body["title"] = input.title;
-    if (input.description !== undefined) body["description"] = input.description;
-    if (input.status !== undefined) body["status"] = input.status;
+    const { goalId, companyId: _ignored, ...body } = input;
     const raw = (await client.request(
       "PATCH",
-      `/api/goals/${encodeURIComponent(input.goalId)}?companyId=${encodeURIComponent(companyId)}`,
+      `/api/goals/${encodeURIComponent(goalId)}?companyId=${encodeURIComponent(companyId)}`,
       body,
-    )) as GoalRaw;
-    return { id: raw.id, title: raw.title, status: raw.status };
+    )) as Record<string, unknown>;
+    return { id: raw["id"], title: raw["title"], status: raw["status"] };
   },
 };
