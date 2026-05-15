@@ -7,6 +7,7 @@ const inputSchema = z.object({
   description: z.string().optional().describe("Issue description (markdown)"),
   status: z.enum(["backlog", "todo", "in_progress", "in_review", "done", "blocked", "cancelled"]).optional(),
   priority: z.enum(["critical", "high", "medium", "low"]).optional(),
+  workMode: z.enum(["standard", "planning"]).optional().describe("Execution work mode (default: standard)"),
   assigneeAgentId: z.string().optional().describe("Assignee agent UUID"),
   projectId: z.string().optional().describe("Project UUID"),
   parentId: z.string().optional().describe("Parent issue UUID"),
