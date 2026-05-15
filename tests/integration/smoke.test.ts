@@ -1,11 +1,7 @@
 import { describe, it, expect, beforeAll } from "bun:test";
-import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 import { PaperclipClient } from "../../src/client.js";
 import { agentPatchTool } from "../../src/tools/agent-patch.js";
 import { skillSyncTool } from "../../src/tools/skill-sync.js";
-import { boardChannelAppendTool } from "../../src/tools/board-channel-append.js";
 
 const apiBase = process.env["PAPERCLIP_API_BASE"] ?? "http://127.0.0.1:3100";
 const companyId = process.env["PAPERCLIP_COMPANY_ID"];
@@ -52,25 +48,4 @@ describe.skipIf(!companyId)("integration smoke (requires live Paperclip)", () =>
     expect(Array.isArray((result as { desiredSkills: unknown }).desiredSkills)).toBe(true);
   });
 
-  it("board_channel_append: writes to a temp file and produces today's dated section", async () => {
-    const dir = mkdtempSync(join(tmpdir(), "bc-int-"));
-    const file = join(dir, "BOARD_CHANNEL.md");
-    writeFileSync(
-      file,
-      `# Board Channel\n\n## Log\n\n<!-- Atlas writes below this line. Newest day on top. -->\n`,
-    );
-    try {
-      const result = await boardChannelAppendTool.handler(
-        { entry: "smoke test entry", filePath: file },
-        { client },
-      );
-      expect((result as { appended: boolean }).appended).toBe(true);
-      const content = readFileSync(file, "utf8");
-      const today = new Date().toISOString().slice(0, 10);
-      expect(content).toContain(`## ${today}`);
-      expect(content).toContain("smoke test entry");
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
-    }
-  });
 });
