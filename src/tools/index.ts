@@ -13,7 +13,61 @@ import { skillSyncTool } from "./skill-sync.js";
 import { projectCreateTool } from "./project-create.js";
 import { projectDeleteTool } from "./project-delete.js";
 import { memberSetGrantsTool } from "./member-set-grants.js";
-import { boardChannelAppendTool } from "./board-channel-append.js";
+// Group E — Inbox (agent-scoped, requires PAPERCLIP_AGENT_API_KEY)
+import { meWhoamiTool } from "./me-whoami.js";
+import { inboxMineTool } from "./inbox-mine.js";
+import { inboxLiteTool } from "./inbox-lite.js";
+import { inboxDismissalsListTool } from "./inbox-dismissals-list.js";
+import { inboxDismissTool } from "./inbox-dismiss.js";
+// Group F — Approvals (Red-tier lifecycle)
+import { approvalListTool } from "./approval-list.js";
+import { approvalGetTool } from "./approval-get.js";
+import { approvalCreateTool } from "./approval-create.js";
+import { approvalApproveTool } from "./approval-approve.js";
+import { approvalRejectTool } from "./approval-reject.js";
+import { approvalRequestRevisionTool } from "./approval-request-revision.js";
+import { approvalResubmitTool } from "./approval-resubmit.js";
+import { approvalCommentsListTool } from "./approval-comments-list.js";
+import { approvalCommentAddTool } from "./approval-comment-add.js";
+import { approvalIssuesListTool } from "./approval-issues-list.js";
+import { issueApprovalLinkTool } from "./issue-approval-link.js";
+import { issueApprovalUnlinkTool } from "./issue-approval-unlink.js";
+// Group G — Roster discovery
+import { agentListTool } from "./agent-list.js";
+import { agentGetTool } from "./agent-get.js";
+import { agentSkillsListTool } from "./agent-skills-list.js";
+import { agentSkillSyncTool } from "./agent-skill-sync.js";
+import { agentHireTool } from "./agent-hire.js";
+import { agentWakeupTool } from "./agent-wakeup.js";
+import { agentPauseTool } from "./agent-pause.js";
+import { agentResumeTool } from "./agent-resume.js";
+import { agentInstructionsGetTool } from "./agent-instructions-get.js";
+import { agentInstructionsPatchTool } from "./agent-instructions-patch.js";
+import { agentInstructionsFileGetTool } from "./agent-instructions-file-get.js";
+import { agentInstructionsFilePutTool } from "./agent-instructions-file-put.js";
+import { agentInstructionsFileDeleteTool } from "./agent-instructions-file-delete.js";
+// Group H — Projects, members, labels, goals
+import { projectListTool } from "./project-list.js";
+import { projectGetTool } from "./project-get.js";
+import { projectPatchTool } from "./project-patch.js";
+import { memberListTool } from "./member-list.js";
+import { labelListTool } from "./label-list.js";
+import { labelCreateTool } from "./label-create.js";
+import { labelDeleteTool } from "./label-delete.js";
+import { goalListTool } from "./goal-list.js";
+import { goalGetTool } from "./goal-get.js";
+import { goalCreateTool } from "./goal-create.js";
+import { goalPatchTool } from "./goal-patch.js";
+import { goalDeleteTool } from "./goal-delete.js";
+// Group I — Board observability
+import { dashboardGetTool } from "./dashboard-get.js";
+import { activityCompanyTool } from "./activity-company.js";
+import { sidebarBadgesTool } from "./sidebar-badges.js";
+// Group J — Routines
+import { routineListTool } from "./routine-list.js";
+import { routineGetTool } from "./routine-get.js";
+import { routineCreateTool } from "./routine-create.js";
+import { routineRunsListTool } from "./routine-runs-list.js";
 
 export interface ToolDefinition<TInput extends z.ZodTypeAny = z.ZodTypeAny> {
   name: string;
@@ -40,5 +94,59 @@ export const TOOLS: ToolDefinition<any>[] = [
   projectCreateTool,
   projectDeleteTool,
   memberSetGrantsTool,
-  boardChannelAppendTool,
+  // Group E — Inbox (agent-scoped)
+  meWhoamiTool,
+  inboxMineTool,
+  inboxLiteTool,
+  inboxDismissalsListTool,
+  inboxDismissTool,
+  // Group F — Approvals
+  approvalListTool,
+  approvalGetTool,
+  approvalCreateTool,
+  approvalApproveTool,
+  approvalRejectTool,
+  approvalRequestRevisionTool,
+  approvalResubmitTool,
+  approvalCommentsListTool,
+  approvalCommentAddTool,
+  approvalIssuesListTool,
+  issueApprovalLinkTool,
+  issueApprovalUnlinkTool,
+  // Group G — Roster discovery
+  agentListTool,
+  agentGetTool,
+  agentSkillsListTool,
+  agentSkillSyncTool,
+  agentHireTool,
+  agentWakeupTool,
+  agentPauseTool,
+  agentResumeTool,
+  agentInstructionsGetTool,
+  agentInstructionsPatchTool,
+  agentInstructionsFileGetTool,
+  agentInstructionsFilePutTool,
+  agentInstructionsFileDeleteTool,
+  // Group H — Projects, members, labels, goals
+  projectListTool,
+  projectGetTool,
+  projectPatchTool,
+  memberListTool,
+  labelListTool,
+  labelCreateTool,
+  labelDeleteTool,
+  goalListTool,
+  goalGetTool,
+  goalCreateTool,
+  goalPatchTool,
+  goalDeleteTool,
+  // Group I — Board observability
+  dashboardGetTool,
+  activityCompanyTool,
+  sidebarBadgesTool,
+  // Group J — Routines
+  routineListTool,
+  routineGetTool,
+  routineCreateTool,
+  routineRunsListTool,
 ];
