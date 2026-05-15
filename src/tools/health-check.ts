@@ -9,16 +9,18 @@ export const healthCheckTool: ToolDefinition<typeof inputSchema> = {
     "Check whether the local Paperclip server is live and healthy. Hits GET /api/health without authentication. Returns HTTP status, a healthy boolean, and the raw response body when present.",
   inputSchema,
   handler: async (_input, { client }) => {
-    const url = `${client.apiBase}/api/health`;
+    const base = client.apiBase.replace(/\/$/, "");
+    const url = `${base}/api/health`;
     let status: number;
     let body: unknown;
     try {
       const response = await fetch(url);
       status = response.status;
+      const text = await response.text().catch(() => null);
       try {
-        body = await response.json();
+        body = text !== null ? JSON.parse(text) : null;
       } catch {
-        body = await response.text().catch(() => null);
+        body = text;
       }
     } catch {
       return { status: 0, healthy: false, body: null };
