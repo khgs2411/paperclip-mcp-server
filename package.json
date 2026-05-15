@@ -14,12 +14,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/topsyde-ai/paperclip.git",
-    "directory": "mcp"
+    "url": "git+https://github.com/khgs2411/paperclip-mcp-server.git"
   },
-  "homepage": "https://github.com/topsyde-ai/paperclip/tree/master/mcp#readme",
+  "homepage": "https://github.com/khgs2411/paperclip-mcp-server#readme",
   "bugs": {
-    "url": "https://github.com/topsyde-ai/paperclip/issues"
+    "url": "https://github.com/khgs2411/paperclip-mcp-server/issues"
   },
   "keywords": [
     "mcp",
@@ -38,7 +37,12 @@
     "test": "bun test tests/client.test.ts tests/shared tests/tools",
     "test:integration": "bun test tests/integration",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "bun run typecheck && bun test tests/client.test.ts tests/shared tests/tools && bun run build"
+    "prepublishOnly": "bun run typecheck && bun test tests/client.test.ts tests/shared tests/tools && bun run build",
+    "release": "./scripts/release.sh",
+    "release:dry-run": "./scripts/release.sh --dry-run",
+    "release:test": "./scripts/release.sh --test-publish",
+    "release:minor": "./scripts/release.sh minor",
+    "release:major": "./scripts/release.sh major"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
