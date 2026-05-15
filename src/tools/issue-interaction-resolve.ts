@@ -39,17 +39,12 @@ export const issueInteractionResolveTool: ToolDefinition<typeof inputSchema> = {
       ? { response }
       : {};
 
-    const raw = await client.request(
+    const result = await client.request(
       "POST",
       `/api/issues/${encodeURIComponent(issueId)}/interactions/${encodeURIComponent(interactionId)}/${action}`,
       body,
-    ) as { id?: string; status?: string; resolvedAt?: string; kind?: string };
+    );
 
-    return {
-      id: raw.id,
-      status: raw.status,
-      ...(raw.resolvedAt !== undefined && { resolvedAt: raw.resolvedAt }),
-      ...(raw.kind !== undefined && { kind: raw.kind }),
-    };
+    return result;
   },
 };

@@ -1,6 +1,6 @@
 {
   "name": "paperclip-mcp-server",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MCP server for the local Paperclip orchestration API. Fills gaps in the paperclipai CLI for Claude Code sessions.",
   "license": "MIT",
   "type": "module",
@@ -11,6 +11,23 @@
     "dist",
     "README.md",
     "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/topsyde-ai/paperclip.git",
+    "directory": "mcp"
+  },
+  "homepage": "https://github.com/topsyde-ai/paperclip/tree/master/mcp#readme",
+  "bugs": {
+    "url": "https://github.com/topsyde-ai/paperclip/issues"
+  },
+  "keywords": [
+    "mcp",
+    "paperclip",
+    "ai",
+    "agent",
+    "claude",
+    "model-context-protocol"
   ],
   "engines": {
     "bun": ">=1.0.0"

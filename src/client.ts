@@ -4,20 +4,23 @@ import {
   ToolInputError,
 } from "./shared/errors.js";
 
-export type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE";
+export type HttpMethod = "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
 
 export interface PaperclipClientOptions {
   apiBase: string;
   defaultCompanyId?: string;
+  agentApiKey?: string;
 }
 
 export class PaperclipClient {
   readonly apiBase: string;
   readonly defaultCompanyId: string | undefined;
+  readonly agentApiKey: string | undefined;
 
   constructor(opts: PaperclipClientOptions) {
     this.apiBase = opts.apiBase.replace(/\/+$/, "");
     this.defaultCompanyId = opts.defaultCompanyId;
+    this.agentApiKey = opts.agentApiKey;
   }
 
   resolveCompanyId(input: string | undefined): string {
@@ -37,11 +40,15 @@ export class PaperclipClient {
     body?: unknown,
   ): Promise<T> {
     const url = `${this.apiBase}${path}`;
+    const headers: Record<string, string> = {
+      ...(this.agentApiKey ? { Authorization: `Bearer ${this.agentApiKey}` } : {}),
+    };
+    if (body !== undefined) headers["Content-Type"] = "application/json";
     let response: Response;
     try {
       response = await fetch(url, {
         method,
-        headers: body !== undefined ? { "Content-Type": "application/json" } : undefined,
+        headers: Object.keys(headers).length > 0 ? headers : undefined,
         body: body !== undefined ? JSON.stringify(body) : undefined,
       });
     } catch {

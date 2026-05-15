@@ -82,4 +82,40 @@ describe("PaperclipClient", () => {
     const c = new PaperclipClient({ apiBase: BASE });
     expect(() => c.resolveCompanyId(undefined)).toThrow();
   });
+
+  it("sends Authorization: Bearer header when agentApiKey is set", async () => {
+    const spy = mockFetchOnce(200, { ok: true });
+    const c = new PaperclipClient({ apiBase: BASE, agentApiKey: "secret-token" });
+    await c.request("GET", "/api/agents/me");
+    expect(spy).toHaveBeenCalledWith(
+      `${BASE}/api/agents/me`,
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: "Bearer secret-token" }),
+      }),
+    );
+  });
+
+  it("does not send Authorization header when agentApiKey is absent", async () => {
+    const spy = mockFetchOnce(200, { ok: true });
+    const c = new PaperclipClient({ apiBase: BASE });
+    await c.request("GET", "/api/health");
+    const callArgs = spy.mock.calls[0] as [string, RequestInit];
+    const headers = callArgs[1]?.headers as Record<string, string> | undefined;
+    expect(headers?.["Authorization"]).toBeUndefined();
+  });
+
+  it("sends both Authorization and Content-Type when body and key are present", async () => {
+    const spy = mockFetchOnce(200, { id: "x" });
+    const c = new PaperclipClient({ apiBase: BASE, agentApiKey: "my-key" });
+    await c.request("PATCH", "/api/agents/x", { name: "Test" });
+    expect(spy).toHaveBeenCalledWith(
+      `${BASE}/api/agents/x`,
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: "Bearer my-key",
+          "Content-Type": "application/json",
+        }),
+      }),
+    );
+  });
 });

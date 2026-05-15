@@ -85,27 +85,4 @@ describe("issue_interaction_resolve", () => {
       }),
     ).rejects.toThrow();
   });
-
-  it("returns compact shape and strips extra API fields", async () => {
-    const client = new PaperclipClient({ apiBase: "http://x" });
-    const rawBlob = {
-      id: "i1",
-      status: "accepted",
-      resolvedAt: "2026-05-15T12:00:00Z",
-      kind: "confirmation",
-      extraField: "should not appear",
-      anotherField: 42,
-    };
-    spyOn(client, "request").mockResolvedValueOnce(rawBlob);
-    const result = await issueInteractionResolveTool.handler(
-      { issueId: "TOP-10", interactionId: "i1", action: "accept" },
-      { client },
-    );
-    expect(result).toEqual({
-      id: "i1",
-      status: "accepted",
-      resolvedAt: "2026-05-15T12:00:00Z",
-      kind: "confirmation",
-    });
-  });
 });
