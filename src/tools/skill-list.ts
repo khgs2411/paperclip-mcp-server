@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { ToolDefinition } from "./index.js";
 
 const inputSchema = z.object({
-  companyId: z.string().optional(),
+  companyId: z.string().optional().describe("Company ID override; defaults to PAPERCLIP_COMPANY_ID."),
 });
 
 interface SkillRaw {
@@ -14,7 +14,7 @@ interface SkillRaw {
 export const skillListTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_skill_list",
   description:
-    "List all company-level skills in the catalog. Distinct from paperclip_agent_skills_list, which returns the skill assignment snapshot for a specific agent.",
+    "List all skills installed at the company level. These are company-wide skills available for agents to use, distinct from per-agent skill snapshots (use paperclip_agent_skills_list for those).",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
