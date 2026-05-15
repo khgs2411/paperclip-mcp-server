@@ -38,10 +38,12 @@ export class PaperclipClient {
     method: HttpMethod,
     path: string,
     body?: unknown,
+    extraHeaders?: Record<string, string>,
   ): Promise<T> {
     const url = `${this.apiBase}${path}`;
     const headers: Record<string, string> = {
       ...(this.agentApiKey ? { Authorization: `Bearer ${this.agentApiKey}` } : {}),
+      ...extraHeaders,
     };
     if (body !== undefined) headers["Content-Type"] = "application/json";
     let response: Response;

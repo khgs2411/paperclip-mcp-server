@@ -73,6 +73,8 @@ import { agentInstructionsPatchTool } from "./agent-instructions-patch.js";
 import { agentInstructionsFileGetTool } from "./agent-instructions-file-get.js";
 import { agentInstructionsFilePutTool } from "./agent-instructions-file-put.js";
 import { agentInstructionsFileDeleteTool } from "./agent-instructions-file-delete.js";
+import { agentInstructionsSafeGetTool } from "./agent-instructions-safe-get.js";
+import { agentInstructionsSafePutTool } from "./agent-instructions-safe-put.js";
 // Group H — Projects, members, labels, goals, skills, adapters
 import { adapterModelsListTool } from "./adapter-models-list.js";
 import { projectListTool } from "./project-list.js";
@@ -188,6 +190,8 @@ export const TOOLS: ToolDefinition<any>[] = [
   agentInstructionsFileGetTool,
   agentInstructionsFilePutTool,
   agentInstructionsFileDeleteTool,
+  agentInstructionsSafeGetTool,
+  agentInstructionsSafePutTool,
   // Group H — Projects, members, labels, goals
   projectListTool,
   projectGetTool,

@@ -109,11 +109,13 @@ Inbox tools (`paperclip_me_whoami`, `paperclip_inbox_*`) require an agent-scoped
 | `paperclip_agent_wakeup` | Wake an agent, optionally scoped to an issue. |
 | `paperclip_agent_pause` | Pause an agent. |
 | `paperclip_agent_resume` | Resume a paused agent. |
-| `paperclip_agent_instructions_get` | Get an agent's instructions bundle. |
-| `paperclip_agent_instructions_patch` | Patch an agent's instructions bundle. |
-| `paperclip_agent_instructions_file_get` | Get a single file from an agent's instructions bundle. |
-| `paperclip_agent_instructions_file_put` | Write a file into an agent's instructions bundle. |
-| `paperclip_agent_instructions_file_delete` | Delete a file from an agent's instructions bundle. |
+| `paperclip_agent_instructions_safe_get` | Safely inspect managed instructions. Default output is metadata, paths, sizes, hashes, and warnings; content readback requires `filePath`. |
+| `paperclip_agent_instructions_safe_put` | Guarded managed-instruction file write requiring provenance, change summary, and run audit metadata. |
+| `paperclip_agent_instructions_get` | Lower-level/admin: get the raw instructions bundle and may return full file bodies. Prefer `safe_get` for normal review. |
+| `paperclip_agent_instructions_patch` | Lower-level/admin: patch raw instruction sections. Prefer `safe_put` for single-file managed-instruction changes. |
+| `paperclip_agent_instructions_file_get` | Lower-level/admin: get a single raw file from an agent's instructions bundle. |
+| `paperclip_agent_instructions_file_put` | Lower-level/admin: write a raw file into an agent's instructions bundle without provenance guards. |
+| `paperclip_agent_instructions_file_delete` | Lower-level/admin: delete a file from an agent's instructions bundle. |
 
 ### Group H — Projects, members, labels, goals
 
@@ -162,7 +164,17 @@ Inbox tools (`paperclip_me_whoami`, `paperclip_inbox_*`) require an agent-scoped
 
 - `paperclip_skill_sync` is deprecated. Use `paperclip_agent_skill_sync` instead. The old tool is kept for backward compatibility.
 
+## Managed instruction safety
+
+Use `paperclip_agent_instructions_safe_get` and `paperclip_agent_instructions_safe_put` for managed-instruction work. `safe_get` does not return file content unless a single `filePath` is requested. `safe_put` rejects path traversal, empty change summaries, missing provenance, missing run audit ids, and live role/model/reasoning configuration paths; it also sends `X-Paperclip-Run-Id` to the Paperclip API.
+
+The older `paperclip_agent_instructions_*` tools remain for compatibility and admin/debugging. They are intentionally documented as lower-level because they can expose raw bundle payloads or write without the safer provenance wrapper.
+
 ## Release Notes
+
+### 0.3.6
+
+- Added safe managed-instruction read/write tools with metadata-first readback, provenance requirements, run audit headers, and unsafe path/input guards.
 
 ### 0.3.5
 
