@@ -11,22 +11,21 @@ const inputSchema = z.object({
 export const inboxSummaryTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_inbox_summary",
   description:
-    "Returns a single-read summary of pending work: interaction count, pending approval count, and unassigned in-review issues.",
+    "Returns a single-read summary of pending work: pending approval count and total in-review issue count. " +
+    "Note: pending interaction count is not included — no company-level interactions endpoint exists; use paperclip_issue_interactions_list per issue instead.",
   inputSchema,
   handler: async (input, { client }) => {
     const companyId = client.resolveCompanyId(input.companyId);
 
     const enc = encodeURIComponent(companyId);
-    const [interactions, approvals, unassignedInReview] = await Promise.all([
-      client.request<unknown[]>("GET", `/api/companies/${enc}/interactions?status=pending`),
+    const [approvals, inReview] = await Promise.all([
       client.request<unknown[]>("GET", `/api/companies/${enc}/approvals?status=pending`),
       client.request<unknown[]>("GET", `/api/companies/${enc}/issues?status=in_review`),
     ]);
 
     return {
-      pendingInteractions: interactions.length,
       pendingApprovals: approvals.length,
-      unassignedInReview: unassignedInReview.length,
+      totalInReview: inReview.length,
     };
   },
 };

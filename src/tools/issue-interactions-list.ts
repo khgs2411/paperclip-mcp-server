@@ -19,6 +19,7 @@ interface RawInteraction {
   kind?: string;
   status?: string;
   prompt?: string;
+  options?: unknown[];
   createdAt?: string;
   createdByAgentId?: string;
 }
@@ -40,9 +41,10 @@ export const issueInteractionsListTool: ToolDefinition<typeof inputSchema> = {
       issueIdentifier: item.issueIdentifier,
       kind: item.kind,
       status: item.status,
-      prompt: item.prompt ? item.prompt.slice(0, 200) : item.prompt,
+      prompt: item.prompt?.slice(0, 200) ?? null,
       createdAt: item.createdAt,
       createdByAgentId: item.createdByAgentId,
+      ...(item.options !== undefined && { options: item.options }),
     }));
   },
 };

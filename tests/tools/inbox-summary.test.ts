@@ -6,23 +6,21 @@ import { PaperclipApiError, ToolInputError } from "../../src/shared/errors.js";
 describe("paperclip_inbox_summary", () => {
   beforeEach(() => mock.restore());
 
-  it("returns combined counts from three endpoints", async () => {
+  it("returns combined counts from two endpoints", async () => {
     const client = new PaperclipClient({
       apiBase: "http://x",
       defaultCompanyId: "cid1",
     });
     const spy = spyOn(client, "request")
-      .mockResolvedValueOnce([{ id: "i1" }, { id: "i2" }]) // interactions
       .mockResolvedValueOnce([{ id: "a1" }]) // approvals
-      .mockResolvedValueOnce([{ id: "r1" }, { id: "r2" }, { id: "r3" }]); // unassigned in_review
+      .mockResolvedValueOnce([{ id: "r1" }, { id: "r2" }, { id: "r3" }]); // in_review
 
     const result = await inboxSummaryTool.handler({ companyId: "cid1" }, { client });
 
-    expect(spy).toHaveBeenCalledTimes(3);
+    expect(spy).toHaveBeenCalledTimes(2);
     expect(result).toEqual({
-      pendingInteractions: 2,
       pendingApprovals: 1,
-      unassignedInReview: 3,
+      totalInReview: 3,
     });
   });
 
@@ -33,13 +31,11 @@ describe("paperclip_inbox_summary", () => {
     });
     spyOn(client, "request")
       .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([]);
     const result = await inboxSummaryTool.handler({}, { client });
     expect(result).toEqual({
-      pendingInteractions: 0,
       pendingApprovals: 0,
-      unassignedInReview: 0,
+      totalInReview: 0,
     });
   });
 
@@ -55,7 +51,7 @@ describe("paperclip_inbox_summary", () => {
       apiBase: "http://x",
       defaultCompanyId: "cid1",
     });
-    const apiError = new PaperclipApiError(500, { error: "internal" }, "/api/companies/cid1/interactions");
+    const apiError = new PaperclipApiError(500, { error: "internal" }, "/api/companies/cid1/approvals");
     spyOn(client, "request").mockRejectedValueOnce(apiError);
 
     await expect(

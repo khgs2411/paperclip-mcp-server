@@ -74,4 +74,27 @@ describe("issue_interactions_list", () => {
       "/api/issues/550e8400-e29b-41d4-a716-446655440000/interactions?status=pending",
     );
   });
+
+  it("passes through options array when present", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x" });
+    spyOn(client, "request").mockResolvedValueOnce([
+      { ...MOCK_INTERACTION, kind: "suggest_tasks", options: ["task A", "task B"] },
+    ]);
+    const result = (await issueInteractionsListTool.handler(
+      { issueId: "TOP-10" },
+      { client },
+    )) as Array<{ options?: unknown[] }>;
+    expect(result[0]!.options).toEqual(["task A", "task B"]);
+  });
+
+  it("returns null for missing prompt instead of undefined", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x" });
+    const { prompt: _omit, ...noPrompt } = MOCK_INTERACTION;
+    spyOn(client, "request").mockResolvedValueOnce([noPrompt]);
+    const result = (await issueInteractionsListTool.handler(
+      { issueId: "TOP-10" },
+      { client },
+    )) as Array<{ prompt: unknown }>;
+    expect(result[0]!.prompt).toBeNull();
+  });
 });

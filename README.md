@@ -35,7 +35,7 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 | `paperclip_issue_patch` | Update issue fields not fully covered by the CLI. |
 | `paperclip_issue_interactions_list` | List pending interactions (confirmations, questions) for an issue. |
 | `paperclip_issue_interaction_resolve` | Resolve a pending interaction (accept/reject/respond/cancel). |
-| `paperclip_inbox_summary` | Single-read count of pending interactions, approvals, and unassigned in-review issues. |
+| `paperclip_inbox_summary` | Single-read count of pending approvals and total in-review issues. (Pending interaction count is omitted — no company-level interactions endpoint exists; use `paperclip_issue_interactions_list` per issue.) |
 | `paperclip_skill_sync` | Replace or merge an agent's desired skills. |
 | `paperclip_project_create` | Create a project. |
 | `paperclip_project_delete` | Delete a project. |
