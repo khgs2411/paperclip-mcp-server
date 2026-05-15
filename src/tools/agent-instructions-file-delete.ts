@@ -15,7 +15,7 @@ export const agentInstructionsFileDeleteTool: ToolDefinition<typeof inputSchema>
     const companyId = client.resolveCompanyId(input.companyId);
     await client.request(
       "DELETE",
-      `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}&filePath=${encodeURIComponent(input.filePath)}`,
+      `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}&path=${encodeURIComponent(input.filePath)}`,
     );
     return { filePath: input.filePath, deleted: true };
   },

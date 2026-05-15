@@ -17,7 +17,7 @@ export const agentInstructionsFilePutTool: ToolDefinition<typeof inputSchema> = 
     await client.request(
       "PUT",
       `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}`,
-      { filePath: input.filePath, content: input.content },
+      { path: input.filePath, content: input.content },
     );
     return { filePath: input.filePath, written: true };
   },

@@ -17,7 +17,7 @@ describe("agent_instructions_file_put", () => {
     expect(requestSpy).toHaveBeenCalledWith(
       "PUT",
       "/api/agents/A1/instructions-bundle/file?companyId=C1",
-      { filePath: "AGENTS.md", content: "# New content" },
+      { path: "AGENTS.md", content: "# New content" },
     );
     expect(result).toEqual({ filePath: "AGENTS.md", written: true });
   });
@@ -32,7 +32,7 @@ describe("agent_instructions_file_put", () => {
     expect(spy).toHaveBeenCalledWith(
       "PUT",
       "/api/agents/A1/instructions-bundle/file?companyId=C2",
-      { filePath: "f.md", content: "x" },
+      { path: "f.md", content: "x" },
     );
   });
 });

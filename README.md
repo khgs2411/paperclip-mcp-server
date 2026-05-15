@@ -162,6 +162,12 @@ Inbox tools (`paperclip_me_whoami`, `paperclip_inbox_*`) require an agent-scoped
 
 - `paperclip_skill_sync` is deprecated. Use `paperclip_agent_skill_sync` instead. The old tool is kept for backward compatibility.
 
+## Release Notes
+
+### 0.3.5
+
+- Fixed `paperclip_agent_instructions_file_get`, `paperclip_agent_instructions_file_put`, and `paperclip_agent_instructions_file_delete` so the public `filePath` MCP argument is sent to the Paperclip API as `path`.
+
 ## Development
 
 ```bash

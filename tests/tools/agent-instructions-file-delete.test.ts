@@ -5,7 +5,7 @@ import { PaperclipClient } from "../../src/client.js";
 describe("agent_instructions_file_delete", () => {
   beforeEach(() => mock.restore());
 
-  it("DELETEs the file endpoint with filePath query param and returns deleted shape", async () => {
+  it("DELETEs the file endpoint with path query param and returns deleted shape", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
     const requestSpy = spyOn(client, "request").mockResolvedValueOnce({});
 
@@ -16,7 +16,7 @@ describe("agent_instructions_file_delete", () => {
 
     expect(requestSpy).toHaveBeenCalledWith(
       "DELETE",
-      "/api/agents/A1/instructions-bundle/file?companyId=C1&filePath=AGENTS.md",
+      "/api/agents/A1/instructions-bundle/file?companyId=C1&path=AGENTS.md",
     );
     expect(result).toEqual({ filePath: "AGENTS.md", deleted: true });
   });
@@ -30,7 +30,7 @@ describe("agent_instructions_file_delete", () => {
     );
     expect(spy).toHaveBeenCalledWith(
       "DELETE",
-      "/api/agents/A1/instructions-bundle/file?companyId=C1&filePath=my%20file.md",
+      "/api/agents/A1/instructions-bundle/file?companyId=C1&path=my%20file.md",
     );
   });
 });

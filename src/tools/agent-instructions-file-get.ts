@@ -15,11 +15,11 @@ export const agentInstructionsFileGetTool: ToolDefinition<typeof inputSchema> = 
     const companyId = client.resolveCompanyId(input.companyId);
     const raw = (await client.request(
       "GET",
-      `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}&filePath=${encodeURIComponent(input.filePath)}`,
+      `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}&path=${encodeURIComponent(input.filePath)}`,
     )) as Record<string, unknown>;
 
     return {
-      filePath: raw["filePath"] ?? input.filePath,
+      filePath: raw["filePath"] ?? raw["path"] ?? input.filePath,
       content: raw["content"] as string,
     };
   },
