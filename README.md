@@ -50,7 +50,7 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 | `confirmation` | `accept`, `reject` | `POST /api/issues/:id/interactions/:interactionId/{accept,reject}` |
 | `question` | `respond`, `cancel` | `POST /api/issues/:id/interactions/:interactionId/{respond,cancel}` |
 
-Passing an incompatible action returns a `tool_input_error` before any HTTP call is made.
+Kind→action compatibility is enforced by the REST API, not the client.
 
 ## Development
 

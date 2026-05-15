@@ -18,15 +18,9 @@ export const inboxSummaryTool: ToolDefinition<typeof inputSchema> = {
 
     const enc = encodeURIComponent(companyId);
     const [interactions, approvals, unassignedInReview] = await Promise.all([
-      client
-        .request<unknown[]>("GET", `/api/companies/${enc}/interactions?status=pending`)
-        .catch(() => [] as unknown[]),
-      client
-        .request<unknown[]>("GET", `/api/companies/${enc}/approvals?status=pending`)
-        .catch(() => [] as unknown[]),
-      client
-        .request<unknown[]>("GET", `/api/companies/${enc}/issues?status=in_review`)
-        .catch(() => [] as unknown[]),
+      client.request<unknown[]>("GET", `/api/companies/${enc}/interactions?status=pending`),
+      client.request<unknown[]>("GET", `/api/companies/${enc}/approvals?status=pending`),
+      client.request<unknown[]>("GET", `/api/companies/${enc}/issues?status=in_review`),
     ]);
 
     return {

@@ -1,7 +1,7 @@
 import { describe, it, expect, spyOn, beforeEach, mock } from "bun:test";
 import { inboxSummaryTool } from "../../src/tools/inbox-summary.js";
 import { PaperclipClient } from "../../src/client.js";
-import { ToolInputError } from "../../src/shared/errors.js";
+import { PaperclipApiError, ToolInputError } from "../../src/shared/errors.js";
 
 describe("paperclip_inbox_summary", () => {
   beforeEach(() => mock.restore());
@@ -48,5 +48,18 @@ describe("paperclip_inbox_summary", () => {
     await expect(
       inboxSummaryTool.handler({}, { client }),
     ).rejects.toBeInstanceOf(ToolInputError);
+  });
+
+  it("propagates API errors instead of swallowing them", async () => {
+    const client = new PaperclipClient({
+      apiBase: "http://x",
+      defaultCompanyId: "cid1",
+    });
+    const apiError = new PaperclipApiError(500, { error: "internal" }, "/api/companies/cid1/interactions");
+    spyOn(client, "request").mockRejectedValueOnce(apiError);
+
+    await expect(
+      inboxSummaryTool.handler({ companyId: "cid1" }, { client }),
+    ).rejects.toBeInstanceOf(PaperclipApiError);
   });
 });
