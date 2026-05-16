@@ -1,5 +1,6 @@
 import { TOOLS } from "./tools/index.js";
 import { PaperclipClient } from "./client.js";
+import { authorizeTool, type McpRuntimeContext } from "./auth/access.js";
 import {
   PaperclipApiError,
   PaperclipUnreachableError,
@@ -16,6 +17,7 @@ export async function handleCallTool(
   client: PaperclipClient,
   getHealth: () => Promise<boolean>,
   invalidateHealth: () => void,
+  runtimeContext: McpRuntimeContext,
 ): Promise<CallToolResult> {
   const isHealthy = await getHealth();
   if (!isHealthy) {
@@ -47,6 +49,15 @@ export async function handleCallTool(
           }),
         },
       ],
+    };
+  }
+
+  const authz = authorizeTool(runtimeContext, toolName, args ?? {});
+  if (!authz.allowed) {
+    console.error(JSON.stringify({ eventType: "mcp_authorization_denied", ...authz }));
+    return {
+      isError: true,
+      content: [{ type: "text", text: JSON.stringify(authz) }],
     };
   }
 

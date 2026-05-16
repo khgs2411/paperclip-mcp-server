@@ -6,13 +6,14 @@ import { PaperclipApiError } from "../src/shared/errors.js";
 const UNHEALTHY = async () => false;
 const HEALTHY = async () => true;
 const NOOP_INVALIDATE = () => {};
+const LOCAL_BOARD = { mode: "local_board" } as const;
 
 describe("startup health check gate", () => {
   beforeEach(() => mock.restore());
 
   it("returns paperclip_unreachable for any tool call when getHealth returns false", async () => {
     const client = new PaperclipClient({ apiBase: "http://127.0.0.1:3100" });
-    const result = await handleCallTool("paperclip_issue_patch", {}, client, UNHEALTHY, NOOP_INVALIDATE);
+    const result = await handleCallTool("paperclip_issue_patch", {}, client, UNHEALTHY, NOOP_INVALIDATE, LOCAL_BOARD);
     expect(result.isError).toBe(true);
     const payload = JSON.parse(result.content[0]!.text) as { code: string };
     expect(payload.code).toBe("paperclip_unreachable");
@@ -20,7 +21,7 @@ describe("startup health check gate", () => {
 
   it("returns paperclip_unreachable even for unknown tool names when getHealth returns false", async () => {
     const client = new PaperclipClient({ apiBase: "http://127.0.0.1:3100" });
-    const result = await handleCallTool("nonexistent_tool", {}, client, UNHEALTHY, NOOP_INVALIDATE);
+    const result = await handleCallTool("nonexistent_tool", {}, client, UNHEALTHY, NOOP_INVALIDATE, LOCAL_BOARD);
     expect(result.isError).toBe(true);
     const payload = JSON.parse(result.content[0]!.text) as { code: string };
     expect(payload.code).toBe("paperclip_unreachable");
@@ -42,6 +43,7 @@ describe("startup health check gate", () => {
       client,
       HEALTHY,
       NOOP_INVALIDATE,
+      LOCAL_BOARD,
     );
     expect(result.isError).toBeUndefined();
     const body = JSON.parse(result.content[0]!.text) as { id: string };
@@ -60,6 +62,7 @@ describe("startup health check gate", () => {
       client,
       HEALTHY,
       () => { invalidated = true; },
+      LOCAL_BOARD,
     );
     expect(result.isError).toBe(true);
     const payload = JSON.parse(result.content[0]!.text) as { code: string; statusCode: number };
@@ -80,6 +83,7 @@ describe("startup health check gate", () => {
       client,
       HEALTHY,
       () => { invalidated = true; },
+      LOCAL_BOARD,
     );
     expect(invalidated).toBe(false);
   });
