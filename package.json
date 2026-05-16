@@ -1,6 +1,6 @@
 {
   "name": "company-mcp-server",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "MCP server for the local company orchestration API. Fills gaps in the paperclipai CLI for Claude Code sessions.",
   "license": "MIT",
   "type": "module",
