@@ -1,11 +1,11 @@
 {
-  "name": "paperclip-mcp-server",
+  "name": "company-mcp-server",
   "version": "0.3.6",
-  "description": "MCP server for the local Paperclip orchestration API. Fills gaps in the paperclipai CLI for Claude Code sessions.",
+  "description": "MCP server for the local company orchestration API. Fills gaps in the paperclipai CLI for Claude Code sessions.",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "paperclip-mcp-server": "dist/index.js"
+    "company-mcp-server": "dist/index.js"
   },
   "files": [
     "dist",
@@ -14,15 +14,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/khgs2411/paperclip-mcp-server.git"
+    "url": "git+https://github.com/khgs2411/company-mcp-server.git"
   },
-  "homepage": "https://github.com/khgs2411/paperclip-mcp-server#readme",
+  "homepage": "https://github.com/khgs2411/company-mcp-server#readme",
   "bugs": {
-    "url": "https://github.com/khgs2411/paperclip-mcp-server/issues"
+    "url": "https://github.com/khgs2411/company-mcp-server/issues"
   },
   "keywords": [
     "mcp",
-    "paperclip",
+    "company",
     "ai",
     "agent",
     "claude",

@@ -45,7 +45,7 @@ describe("workflow boundary guard", () => {
         toolName: "paperclip_issue_create",
         fields: {
           description:
-            "Open the approved PR against khgs2411/paperclip and keep khgs2411/paperclip-mcp-server as the MCP-server remote.",
+            "Open the approved PR against khgs2411/paperclip and keep khgs2411/company-mcp-server as the MCP-server remote.",
         },
       }),
     ).not.toThrow();

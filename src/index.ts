@@ -56,7 +56,7 @@ async function getHealth(): Promise<boolean> {
 }
 
 const server = new Server(
-  { name: "paperclip-mcp-server", version: serverVersion },
+  { name: "company-mcp-server", version: serverVersion },
   { capabilities: { tools: {} } },
 );
 

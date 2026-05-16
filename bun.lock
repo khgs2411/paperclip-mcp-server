@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "paperclip-mcp-server",
+      "name": "company-mcp-server",
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.29.0",
         "@paperclipai/shared": "2026.513.0",

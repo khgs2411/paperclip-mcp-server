@@ -1,5 +1,5 @@
 #!/bin/bash
-# release.sh — semver-bump + build + publish + push for paperclip-mcp-server.
+# release.sh — semver-bump + build + publish + push for company-mcp-server.
 #
 # Bun-only: all CLI calls use Bun. npm is only the registry destination.
 # Adapted from the topsyde-utils release script with these improvements:
@@ -100,7 +100,7 @@ elif [ "$TEST_PUBLISH" = true ]; then
   echo -e "${YELLOW}TEST PUBLISH — simulates publish via 'bun publish --dry-run'${NC}"
 fi
 
-echo -e "${YELLOW}Package:${NC}        paperclip-mcp-server"
+echo -e "${YELLOW}Package:${NC}        company-mcp-server"
 echo -e "${YELLOW}Current version:${NC} $CURRENT_VERSION"
 echo -e "${YELLOW}New version:${NC}     $NEW_VERSION"
 echo -e "${YELLOW}npm tag:${NC}         $TAG"
@@ -160,7 +160,7 @@ fi
 if [ "$DRY_RUN" = false ] && [ "$TEST_PUBLISH" = false ]; then
   echo -e "${YELLOW}Committing version bump...${NC}"
   git add package.json
-  git commit -m "chore(release): paperclip-mcp-server@$NEW_VERSION" \
+  git commit -m "chore(release): company-mcp-server@$NEW_VERSION" \
     || error_exit "Failed to commit version bump"
   echo -e "${GREEN}Committed${NC}"
 
@@ -188,8 +188,8 @@ elif [ "$TEST_PUBLISH" = true ]; then
   echo -e "${GREEN}Test publish complete.${NC} Would publish $NEW_VERSION (tag=$TAG)."
 else
   echo -e "${GREEN}Published $NEW_VERSION (tag=$TAG)${NC}"
-  echo -e "${GREEN}npm:${NC}     https://www.npmjs.com/package/paperclip-mcp-server"
-  echo -e "${GREEN}Run with:${NC} bunx paperclip-mcp-server"
+  echo -e "${GREEN}npm:${NC}     https://www.npmjs.com/package/company-mcp-server"
+  echo -e "${GREEN}Run with:${NC} bunx company-mcp-server"
 fi
 echo -e "${GREEN}Elapsed:${NC} ${ELAPSED}s"
 echo -e "${GREEN}Dist:${NC}    $DIST_SIZE ($DIST_FILES files)"

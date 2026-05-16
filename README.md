@@ -1,6 +1,6 @@
-# paperclip-mcp-server
+# company-mcp-server
 
-A stdio MCP server that exposes a typed tool surface for interacting with a local Paperclip orchestration API. Fills the gaps in the `paperclipai` CLI.
+A stdio MCP server that exposes a typed tool surface for interacting with a local company orchestration API. Fills the gaps in the `paperclipai` CLI.
 
 ## Install
 
@@ -9,9 +9,9 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 ```json
 {
   "mcpServers": {
-    "paperclip": {
+    "company": {
       "command": "bunx",
-      "args": ["paperclip-mcp-server@latest"],
+      "args": ["company-mcp-server@latest"],
       "env": {
         "PAPERCLIP_API_BASE": "http://127.0.0.1:3100",
         "PAPERCLIP_COMPANY_ID": "<your-company-uuid>"
@@ -26,9 +26,9 @@ A stdio MCP server that exposes a typed tool surface for interacting with a loca
 ```json
 {
   "mcpServers": {
-    "paperclip": {
+    "company": {
       "command": "npx",
-      "args": ["-y", "paperclip-mcp-server@latest"],
+      "args": ["-y", "company-mcp-server@latest"],
       "env": {
         "PAPERCLIP_API_BASE": "http://127.0.0.1:3100",
         "PAPERCLIP_COMPANY_ID": "<your-company-uuid>"
