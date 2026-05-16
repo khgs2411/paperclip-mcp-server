@@ -10,6 +10,7 @@ const inputSchema = z
     title: z.string().optional(),
     description: z.string().optional(),
     status: z.string().optional(),
+    comment: z.string().optional().describe("Optional final/status comment to append with the status update."),
     priority: z.enum(["critical", "high", "medium", "low"]).optional(),
     assigneeAgentId: z.string().nullable().optional().describe("Agent UUID to assign, or null to clear the agent assignee."),
     assigneeUserId: z.string().nullable().optional().describe("User UUID to assign, or null to clear the user assignee. Pass null alongside assigneeAgentId to transfer from a user to an agent in one call."),
@@ -20,6 +21,7 @@ const inputSchema = z
       v.title !== undefined ||
       v.description !== undefined ||
       v.status !== undefined ||
+      v.comment !== undefined ||
       v.priority !== undefined ||
       v.assigneeAgentId !== undefined ||
       v.assigneeUserId !== undefined ||
