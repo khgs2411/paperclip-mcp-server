@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ToolDefinition } from "./index.js";
+import { assertWorkflowBoundaryText } from "../shared/workflow-boundary.js";
 
 const inputSchema = z.object({
   issueId: z.string().min(1).describe("Issue UUID or PREFIX-N identifier"),
@@ -18,6 +19,7 @@ export const issueDocumentPutTool: ToolDefinition<typeof inputSchema> = {
   inputSchema,
   handler: async (input, { client }) => {
     const { issueId, key, format = "markdown", ...rest } = input;
+    assertWorkflowBoundaryText({ toolName: "paperclip_issue_document_put", fields: rest });
     return client.request(
       "PUT",
       `/api/issues/${encodeURIComponent(issueId)}/documents/${encodeURIComponent(key)}`,

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { ToolDefinition } from "./index.js";
 import { isTopIdentifier, isUuid } from "../shared/identifier.js";
+import { assertWorkflowBoundaryText } from "../shared/workflow-boundary.js";
 
 const inputSchema = z
   .object({
@@ -15,6 +16,7 @@ const inputSchema = z
     assigneeAgentId: z.string().nullable().optional().describe("Agent UUID to assign, or null to clear the agent assignee."),
     assigneeUserId: z.string().nullable().optional().describe("User UUID to assign, or null to clear the user assignee. Pass null alongside assigneeAgentId to transfer from a user to an agent in one call."),
     projectId: z.string().nullable().optional(),
+    blockedByIssueIds: z.array(z.string()).optional().describe("Issue UUIDs that block this issue. Pass [] to clear stale blockers."),
   })
   .refine(
     (v) =>
@@ -25,7 +27,8 @@ const inputSchema = z
       v.priority !== undefined ||
       v.assigneeAgentId !== undefined ||
       v.assigneeUserId !== undefined ||
-      v.projectId !== undefined,
+      v.projectId !== undefined ||
+      v.blockedByIssueIds !== undefined,
     { message: "at least one patchable field must be provided", path: ["_patch"] },
   );
 
@@ -36,6 +39,7 @@ export const issuePatchTool: ToolDefinition<typeof inputSchema> = {
   inputSchema,
   handler: async (input, { client }) => {
     const { issueIdOrIdentifier, ...patch } = input;
+    assertWorkflowBoundaryText({ toolName: "paperclip_issue_patch", fields: patch });
     const raw = (await client.request(
       "PATCH",
       `/api/issues/${encodeURIComponent(issueIdOrIdentifier)}`,

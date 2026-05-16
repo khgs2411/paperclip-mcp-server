@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ToolDefinition } from "./index.js";
+import { assertWorkflowBoundaryText } from "../shared/workflow-boundary.js";
 
 const inputSchema = z.object({
   companyId: z.string().optional().describe("Company UUID (falls back to PAPERCLIP_COMPANY_ID)"),
@@ -22,6 +23,7 @@ export const issueCreateTool: ToolDefinition<typeof inputSchema> = {
   inputSchema,
   handler: async (input, { client }) => {
     const { companyId, ...body } = input;
+    assertWorkflowBoundaryText({ toolName: "paperclip_issue_create", fields: body });
     const cid = client.resolveCompanyId(companyId);
     return client.request("POST", `/api/companies/${encodeURIComponent(cid)}/issues`, body);
   },
