@@ -90,6 +90,37 @@ describe("paperclip_board_snapshot", () => {
     expect(result.companyId).toBe("auto-cid");
   });
 
+  it("caps agents client-side and reports the cap in meta", async () => {
+    const client = new PaperclipClient({
+      apiBase: "http://x",
+      defaultCompanyId: "cid1",
+    });
+    const agents = [
+      { id: "a1" },
+      { id: "a2" },
+      { id: "a3" },
+      { id: "a4" },
+    ];
+    const requestSpy = spyOn(client, "request")
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce(agents);
+
+    const result = (await boardSnapshotTool.handler(
+      { companyId: "cid1", agentLimit: 2 },
+      { client },
+    )) as { agents: unknown[]; meta: { capped: { agents: boolean } } };
+
+    // Agents endpoint is called WITHOUT a limit query param — API doesn't accept one.
+    const agentsCall = requestSpy.mock.calls.find(
+      (c) => typeof c[1] === "string" && c[1].includes("/agents"),
+    );
+    expect(agentsCall?.[1]).toBe("/api/companies/cid1/agents");
+    expect(result.agents).toHaveLength(2);
+    expect(result.meta.capped.agents).toBe(true);
+  });
+
   it("caps issues per status group when limit is reached", async () => {
     const client = new PaperclipClient({
       apiBase: "http://x",

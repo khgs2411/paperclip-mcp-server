@@ -48,18 +48,18 @@ export const boardSnapshotTool: ToolDefinition<typeof inputSchema> = {
 
     const issueQs = `?status=${ACTIVE_STATUSES.join(",")}&limit=${issueLimit * ACTIVE_STATUSES.length}`;
 
-    const [issuesRaw, approvalsRaw, projectsRaw, agentsRaw] = await Promise.all([
+    const [issuesRaw, approvalsRaw, projectsRaw, agentsRawAll] = await Promise.all([
       client.request<Issue[]>("GET", `/api/companies/${enc}/issues${issueQs}`),
       client.request<Approval[]>(
         "GET",
         `/api/companies/${enc}/approvals?status=pending`,
       ),
       client.request<unknown[]>("GET", `/api/companies/${enc}/projects`),
-      client.request<unknown[]>(
-        "GET",
-        `/api/companies/${enc}/agents?limit=${agentLimit}`,
-      ),
+      client.request<unknown[]>("GET", `/api/companies/${enc}/agents`),
     ]);
+
+    const agentsCapped = agentsRawAll.length > agentLimit;
+    const agentsRaw = agentsCapped ? agentsRawAll.slice(0, agentLimit) : agentsRawAll;
 
     const issuesByStatus: Record<ActiveStatus, Issue[]> = {
       todo: [],
@@ -117,7 +117,7 @@ export const boardSnapshotTool: ToolDefinition<typeof inputSchema> = {
         agentLimit,
         capped: {
           issues: issueCap,
-          agents: agentsRaw.length >= agentLimit,
+          agents: agentsCapped,
         },
       },
     };
