@@ -54,7 +54,9 @@ export async function handleCallTool(
 
   const authz = authorizeTool(runtimeContext, toolName, args ?? {});
   if (!authz.allowed) {
-    console.error(JSON.stringify({ eventType: "mcp_authorization_denied", ...authz }));
+    console.error(
+      JSON.stringify({ eventType: "mcp_authorization_denied", ...authz }),
+    );
     return {
       isError: true,
       content: [{ type: "text", text: JSON.stringify(authz) }],
@@ -66,12 +68,20 @@ export async function handleCallTool(
     parsed = tool.inputSchema.parse(args ?? {});
   } catch (err) {
     const issue = (
-      err as { issues?: Array<{ path: Array<string | number>; message: string }> }
+      err as {
+        issues?: Array<{ path: Array<string | number>; message: string }>;
+      }
     ).issues?.[0];
     const payload = toToolErrorPayload(
-      new ToolInputError(issue?.path.join(".") ?? "input", issue?.message ?? "invalid"),
+      new ToolInputError(
+        issue?.path.join(".") ?? "input",
+        issue?.message ?? "invalid",
+      ),
     );
-    return { isError: true, content: [{ type: "text", text: JSON.stringify(payload) }] };
+    return {
+      isError: true,
+      content: [{ type: "text", text: JSON.stringify(payload) }],
+    };
   }
 
   try {
@@ -83,13 +93,20 @@ export async function handleCallTool(
       if (err.statusCode >= 500) invalidateHealth();
       return {
         isError: true,
-        content: [{ type: "text", text: JSON.stringify(toToolErrorPayload(err)) }],
+        content: [
+          { type: "text", text: JSON.stringify(toToolErrorPayload(err)) },
+        ],
       };
     }
-    if (err instanceof PaperclipUnreachableError || err instanceof ToolInputError) {
+    if (
+      err instanceof PaperclipUnreachableError ||
+      err instanceof ToolInputError
+    ) {
       return {
         isError: true,
-        content: [{ type: "text", text: JSON.stringify(toToolErrorPayload(err)) }],
+        content: [
+          { type: "text", text: JSON.stringify(toToolErrorPayload(err)) },
+        ],
       };
     }
     return {
@@ -97,7 +114,10 @@ export async function handleCallTool(
       content: [
         {
           type: "text",
-          text: JSON.stringify({ code: "internal_error", message: (err as Error).message }),
+          text: JSON.stringify({
+            code: "internal_error",
+            message: (err as Error).message,
+          }),
         },
       ],
     };
