@@ -96,6 +96,16 @@ const TOOL_RULES: Record<string, ToolRule> = {
     scope: "admin_read",
     requiredProfile: "admin_read",
   },
+  paperclip_adapter_model_profiles_list: {
+    profiles: ["admin_read", "admin_write"],
+    scope: "admin_read",
+    requiredProfile: "admin_read",
+  },
+  paperclip_agent_effective_runtime_config_get: {
+    profiles: ["admin_read", "admin_write"],
+    scope: "admin_read",
+    requiredProfile: "admin_read",
+  },
   paperclip_issue_comment_add: relatedIssueRule(),
   paperclip_issue_patch: {
     profiles: ["worker", "coordinator", "qa"],

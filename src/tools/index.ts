@@ -77,6 +77,8 @@ import { agentInstructionsSafeGetTool } from "./agent-instructions-safe-get.js";
 import { agentInstructionsSafePutTool } from "./agent-instructions-safe-put.js";
 // Group H — Projects, members, labels, goals, skills, adapters
 import { adapterModelsListTool } from "./adapter-models-list.js";
+import { adapterModelProfilesListTool } from "./adapter-model-profiles-list.js";
+import { agentEffectiveRuntimeConfigGetTool } from "./agent-effective-runtime-config-get.js";
 import { projectListTool } from "./project-list.js";
 import { projectGetTool } from "./project-get.js";
 import { projectPatchTool } from "./project-patch.js";
@@ -209,6 +211,8 @@ export const TOOLS: ToolDefinition<any>[] = [
   skillGetTool,
   skillDeleteTool,
   adapterModelsListTool,
+  adapterModelProfilesListTool,
+  agentEffectiveRuntimeConfigGetTool,
   // Group I — Board observability
   dashboardGetTool,
   activityCompanyTool,
