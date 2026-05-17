@@ -15,6 +15,8 @@ describe("issue_patch", () => {
       title: "Board Channel",
       assigneeAgentId: "A1",
       assigneeUserId: null,
+      checkoutRunId: null,
+      executionRunId: null,
     });
     const result = await issuePatchTool.handler(
       { issueIdOrIdentifier: "TOP-16", status: "in_progress", priority: "high" },
@@ -32,7 +34,48 @@ describe("issue_patch", () => {
       title: "Board Channel",
       assigneeAgentId: "A1",
       assigneeUserId: null,
+      checkoutRunId: null,
+      executionRunId: null,
+      interruptedRunId: undefined,
+      cancelledStatusRunId: undefined,
     });
+  });
+
+  it("passes interrupt with a required comment for active run control", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x" });
+    const spy = spyOn(client, "request").mockResolvedValueOnce({
+      id: "U5",
+      identifier: "TOP-403",
+      status: "in_progress",
+      priority: "medium",
+      title: "Manager attention reliability test",
+      assigneeAgentId: "A1",
+      assigneeUserId: null,
+      checkoutRunId: null,
+      executionRunId: null,
+      interruptedRunId: "RUN-1",
+    });
+
+    const result = await issuePatchTool.handler(
+      {
+        issueIdOrIdentifier: "TOP-403",
+        comment: "Interrupting the active run before closing the smoke test.",
+        interrupt: true,
+      },
+      { client },
+    );
+
+    expect(spy).toHaveBeenCalledWith("PATCH", "/api/issues/TOP-403", {
+      comment: "Interrupting the active run before closing the smoke test.",
+      interrupt: true,
+    });
+    expect(result).toMatchObject({ interruptedRunId: "RUN-1" });
+  });
+
+  it("rejects interrupt without a comment", async () => {
+    await expect(
+      issuePatchTool.inputSchema.parseAsync({ issueIdOrIdentifier: "TOP-403", interrupt: true }),
+    ).rejects.toThrow("interrupt requires a non-empty comment");
   });
 
   it("clears user assignee by passing assigneeUserId: null", async () => {

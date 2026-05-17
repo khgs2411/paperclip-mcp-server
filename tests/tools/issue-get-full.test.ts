@@ -23,6 +23,7 @@ describe("issue_get_full", () => {
         blocks: [],
         relatedWork: { outbound: [], inbound: [] },
         checkoutRunId: null,
+        executionRunId: "RUN-1",
         createdAt: "2026-05-14T15:00:00Z",
         updatedAt: "2026-05-14T16:00:00Z",
       })
@@ -38,6 +39,7 @@ describe("issue_get_full", () => {
     expect((result as { identifier: string }).identifier).toBe("TOP-16");
     expect((result as { comments: unknown[] }).comments).toHaveLength(1);
     expect((result as { checkoutRunId: string | null }).checkoutRunId).toBeNull();
+    expect((result as { executionRunId: string | null }).executionRunId).toBe("RUN-1");
   });
 
   it("rejects malformed identifiers", async () => {

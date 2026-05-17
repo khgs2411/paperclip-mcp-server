@@ -12,7 +12,7 @@ const inputSchema = z.object({
 export const issueGetFullTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_issue_get_full",
   description:
-    "Get an issue plus its commonly-needed associations (comments, parentId, ancestors, blockedBy, blocks, relatedWork, checkoutRunId) in one call. Children/sub-issues are NOT included in v0.1.",
+    "Get an issue plus its commonly-needed associations (comments, parentId, ancestors, blockedBy, blocks, relatedWork, checkoutRunId, executionRunId) in one call. Children/sub-issues are NOT included in v0.1.",
   inputSchema,
   handler: async (input, { client }) => {
     const ref = encodeURIComponent(input.issueIdOrIdentifier);
@@ -33,6 +33,7 @@ export const issueGetFullTool: ToolDefinition<typeof inputSchema> = {
       blocks: issue["blocks"],
       relatedWork: issue["relatedWork"],
       checkoutRunId: issue["checkoutRunId"],
+      executionRunId: issue["executionRunId"],
       comments,
       createdAt: issue["createdAt"],
       updatedAt: issue["updatedAt"],
