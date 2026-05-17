@@ -146,7 +146,7 @@ Inbox tools (`paperclip_me_whoami`, `paperclip_inbox_*`) require an agent-scoped
 
 | Tool | Purpose |
 |------|---------|
-| `paperclip_routine_list` | List all routines. |
+| `paperclip_routine_list` | List all routines with schedule-oriented fields (`status`, `nextRunAt`, `lastTriggeredAt`, `triggers`) plus ids/names. |
 | `paperclip_routine_get` | Get a single routine. |
 | `paperclip_routine_create` | Create a routine. |
 | `paperclip_routine_runs_list` | List runs for a routine. |
