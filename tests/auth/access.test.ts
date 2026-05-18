@@ -7,6 +7,7 @@ const tools = [
   "paperclip_issue_patch",
   "paperclip_issue_create_child",
   "paperclip_agent_wakeup",
+  "paperclip_agent_skills_list",
   "paperclip_agent_skill_sync",
   "paperclip_project_delete",
 ];
@@ -27,10 +28,34 @@ describe("role-scoped MCP access decisions", () => {
 
     expect(visible).toContain("paperclip_issue_list");
     expect(visible).toContain("paperclip_issue_comment_add");
+    expect(visible).toContain("paperclip_agent_skills_list");
     expect(visible).not.toContain("paperclip_issue_create_child");
     expect(visible).not.toContain("paperclip_agent_wakeup");
     expect(visible).not.toContain("paperclip_agent_skill_sync");
     expect(visible).not.toContain("paperclip_project_delete");
+  });
+
+  it("allows read-only agent skill inspection while denying skill mutation", () => {
+    const ctx = {
+      mode: "managed_agent" as const,
+      profile: "observer" as const,
+      agentId: "atlas",
+      runId: "run-skills",
+      issueId: "TOP-487",
+    };
+
+    expect(authorizeTool(ctx, "paperclip_agent_skills_list", { agentId: "tooling" }).allowed).toBe(true);
+    expect(authorizeTool(ctx, "paperclip_agent_skill_sync", { agentId: "tooling", skills: [] })).toEqual({
+      allowed: false,
+      code: "mcp_authorization_denied",
+      tool: "paperclip_agent_skill_sync",
+      agentId: "atlas",
+      runId: "run-skills",
+      issueId: "TOP-487",
+      requiredProfile: "admin_write",
+      actualProfile: "observer",
+      reason: "tool requires admin_write access",
+    });
   });
 
   it("allows coordinators to create child issues under owned route", () => {

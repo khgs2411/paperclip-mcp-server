@@ -74,6 +74,41 @@ describe("agent_instructions_safe_put", () => {
     expect(requestSpy.mock.calls[0]?.[3]).toEqual({ "X-Paperclip-Run-Id": "env-run" });
   });
 
+  it("sends nested filePath as API body path instead of a query parameter", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    const requestSpy = spyOn(client, "request").mockResolvedValueOnce({ path: "roles/tooling/AGENTS.md" });
+
+    const result = await agentInstructionsSafePutTool.handler(
+      {
+        agentId: "A1",
+        filePath: "roles/tooling/AGENTS.md",
+        content: "# Tooling",
+        changeSummary: "Clarify tooling heartbeat",
+        provenanceIssueId: "TOP-508",
+        runId: "run-508",
+      },
+      { client },
+    );
+
+    expect(requestSpy).toHaveBeenCalledWith(
+      "PUT",
+      "/api/agents/A1/instructions-bundle/file?companyId=C1",
+      {
+        path: "roles/tooling/AGENTS.md",
+        content: "# Tooling",
+        changeSummary: "Clarify tooling heartbeat",
+        provenanceIssueId: "TOP-508",
+        runId: "run-508",
+      },
+      { "X-Paperclip-Run-Id": "run-508" },
+    );
+    expect(result).toMatchObject({
+      filePath: "roles/tooling/AGENTS.md",
+      provenanceIssueId: "TOP-508",
+      runId: "run-508",
+    });
+  });
+
   it("rejects unsafe paths and live configuration paths before calling the API", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
     const requestSpy = spyOn(client, "request").mockResolvedValueOnce({});
