@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { ToolDefinition } from "./index.js";
+import { ToolInputError } from "../shared/errors.js";
 
 type ActivityEvent = {
   id?: string;
@@ -28,13 +29,13 @@ const inputSchema = z.object({
     .string()
     .datetime({ offset: true })
     .optional()
-    .describe("Exclusive upper createdAt bound for the requested activity window."),
+    .describe("Exclusive upper createdAt bound. Currently rejected because the Paperclip activity API ignores it."),
   offset: z
     .number()
     .int()
     .nonnegative()
     .optional()
-    .describe("Offset for paginating activity rows when the Paperclip API supports it."),
+    .describe("Unsupported except for 0: the Paperclip activity API currently ignores offsets."),
   agentId: z.string().optional().describe("Filter activity rows by agent ID."),
   entityType: z.string().optional().describe("Filter activity rows by entity type."),
   entityId: z.string().optional().describe("Filter activity rows by entity ID."),
@@ -46,11 +47,24 @@ export const activityCompanyTool: ToolDefinition<typeof inputSchema> = {
     "Returns company-level activity feed with bounded-window request parameters and audit metadata. Defaults to limit=20, max 500.",
   inputSchema,
   handler: async (input, { client }) => {
+    if (input.before !== undefined) {
+      throw new ToolInputError(
+        "before",
+        "before is not supported because the Paperclip activity API currently ignores it",
+      );
+    }
+
+    if (input.offset !== undefined && input.offset > 0) {
+      throw new ToolInputError(
+        "offset",
+        "non-zero offset is not supported because the Paperclip activity API currently ignores it",
+      );
+    }
+
     const companyId = client.resolveCompanyId(input.companyId);
     const limit = input.limit ?? 20;
     const params = new URLSearchParams({ limit: String(limit) });
     if (input.since) params.set("since", input.since);
-    if (input.before) params.set("before", input.before);
     if (input.offset !== undefined) params.set("offset", String(input.offset));
     if (input.agentId) params.set("agentId", input.agentId);
     if (input.entityType) params.set("entityType", input.entityType);

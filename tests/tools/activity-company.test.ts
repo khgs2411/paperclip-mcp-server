@@ -39,15 +39,14 @@ describe("activity_company", () => {
     expect(spy).toHaveBeenCalledWith("GET", "/api/companies/C1/activity?limit=20");
   });
 
-  it("passes bounded window and pagination parameters through to the API", async () => {
+  it("passes supported window and filter parameters through to the API", async () => {
     const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
     const spy = spyOn(client, "request").mockResolvedValueOnce([]);
     await activityCompanyTool.handler(
       {
         limit: 500,
         since: "2026-05-15T00:00:00.000Z",
-        before: "2026-05-16T00:00:00.000Z",
-        offset: 500,
+        offset: 0,
         agentId: "A1",
         entityType: "issue",
         entityId: "I1",
@@ -56,8 +55,30 @@ describe("activity_company", () => {
     );
     expect(spy).toHaveBeenCalledWith(
       "GET",
-      "/api/companies/C1/activity?limit=500&since=2026-05-15T00%3A00%3A00.000Z&before=2026-05-16T00%3A00%3A00.000Z&offset=500&agentId=A1&entityType=issue&entityId=I1",
+      "/api/companies/C1/activity?limit=500&since=2026-05-15T00%3A00%3A00.000Z&offset=0&agentId=A1&entityType=issue&entityId=I1",
     );
+  });
+
+  it("rejects before because the backing activity API ignores it", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    const spy = spyOn(client, "request");
+
+    await expect(
+      activityCompanyTool.handler({ before: "2026-05-16T00:00:00.000Z" }, { client }),
+    ).rejects.toThrow(
+      'Invalid tool input: field "before" violated constraint "before is not supported because the Paperclip activity API currently ignores it"',
+    );
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("rejects non-zero offset because the backing activity API ignores it", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    const spy = spyOn(client, "request");
+
+    await expect(activityCompanyTool.handler({ offset: 500 }, { client })).rejects.toThrow(
+      'Invalid tool input: field "offset" violated constraint "non-zero offset is not supported because the Paperclip activity API currently ignores it"',
+    );
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it("marks full-limit responses as capped samples", async () => {
