@@ -1,7 +1,7 @@
 #!/bin/bash
 # release.sh — semver-bump + build + publish + push for company-mcp-server.
 #
-# Bun-only: all CLI calls use Bun. npm is only the registry destination.
+# Bun is used for project commands. npm is used for registry publishing.
 # Adapted from the topsyde-utils release script with these improvements:
 #   - Runs `bun run typecheck` before tests (catches type errors pre-publish).
 #   - After successful publish, pushes the version-bump commit AND a git tag to origin.
@@ -26,7 +26,7 @@ show_usage() {
   echo -e "  major: 1.0.0 -> 2.0.0"
   echo -e "  tag:   npm dist-tag (default: latest)"
   echo -e "  --dry-run        Skip publish, do not modify package.json"
-  echo -e "  --test-publish   Simulate publish via 'bun publish --dry-run'"
+  echo -e "  --test-publish   Simulate publish via 'npm publish --dry-run'"
   echo -e "  --skip-tests     Skip typecheck + tests (not recommended)"
 }
 
@@ -97,7 +97,7 @@ write_version() {
 if [ "$DRY_RUN" = true ]; then
   echo -e "${YELLOW}DRY RUN — no publishing, no version bump${NC}"
 elif [ "$TEST_PUBLISH" = true ]; then
-  echo -e "${YELLOW}TEST PUBLISH — simulates publish via 'bun publish --dry-run'${NC}"
+  echo -e "${YELLOW}TEST PUBLISH — simulates publish via 'npm publish --dry-run'${NC}"
 fi
 
 echo -e "${YELLOW}Package:${NC}        company-mcp-server"
@@ -143,13 +143,13 @@ echo -e "${GREEN}Build complete${NC}"
 echo -e "${YELLOW}Publishing $NEW_VERSION (tag=$TAG)...${NC}"
 PUBLISH_SUCCESS=false
 if [ "$DRY_RUN" = true ]; then
-  echo -e "${YELLOW}DRY RUN: would run 'bun publish --tag $TAG --no-git-checks'${NC}"
+  echo -e "${YELLOW}DRY RUN: would run 'npm publish --tag $TAG'${NC}"
   PUBLISH_SUCCESS=true
 elif [ "$TEST_PUBLISH" = true ]; then
-  echo -e "${YELLOW}TEST PUBLISH: 'bun publish --dry-run --tag $TAG --no-git-checks'${NC}"
-  bun publish --dry-run --tag "$TAG" --no-git-checks && PUBLISH_SUCCESS=true || PUBLISH_SUCCESS=false
+  echo -e "${YELLOW}TEST PUBLISH: 'npm publish --dry-run --tag $TAG'${NC}"
+  npm publish --dry-run --tag "$TAG" && PUBLISH_SUCCESS=true || PUBLISH_SUCCESS=false
 else
-  bun publish --tag "$TAG" --no-git-checks && PUBLISH_SUCCESS=true || PUBLISH_SUCCESS=false
+  npm publish --tag "$TAG" && PUBLISH_SUCCESS=true || PUBLISH_SUCCESS=false
 fi
 
 if [ "$PUBLISH_SUCCESS" = false ]; then
