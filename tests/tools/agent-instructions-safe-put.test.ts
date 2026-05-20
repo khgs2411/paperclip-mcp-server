@@ -1,6 +1,6 @@
 import { describe, it, expect, spyOn, beforeEach, afterEach, mock } from "bun:test";
 import { PaperclipClient } from "../../src/client.js";
-import { ToolInputError } from "../../src/shared/errors.js";
+import { PaperclipApiError, ToolInputError } from "../../src/shared/errors.js";
 import { agentInstructionsSafePutTool } from "../../src/tools/agent-instructions-safe-put.js";
 
 describe("agent_instructions_safe_put", () => {
@@ -187,5 +187,49 @@ describe("agent_instructions_safe_put", () => {
         { client },
       ),
     ).rejects.toBeInstanceOf(ToolInputError);
+  });
+
+  it("surfaces the opaque upstream safe_put 500 as an actionable runId error", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    spyOn(client, "request").mockRejectedValueOnce(
+      new PaperclipApiError(500, { error: "Internal server error" }, "/api/agents/A1/instructions-bundle/file"),
+    );
+
+    await expect(
+      agentInstructionsSafePutTool.handler(
+        {
+          agentId: "A1",
+          filePath: "SOUL.md",
+          content: "x",
+          changeSummary: "Update",
+          provenanceIssueId: "TOP-709",
+          runId: "a96c64e3-e5d4-46e2-8398-7f27d2070514",
+        },
+        { client },
+      ),
+    ).rejects.toMatchObject({
+      field: "runId",
+      constraint: expect.stringContaining("must reference an existing Paperclip run"),
+    });
+  });
+
+  it("preserves non-opaque API failures from safe_put", async () => {
+    const client = new PaperclipClient({ apiBase: "http://x", defaultCompanyId: "C1" });
+    const apiError = new PaperclipApiError(403, { error: "forbidden" }, "/api/agents/A1/instructions-bundle/file");
+    spyOn(client, "request").mockRejectedValueOnce(apiError);
+
+    await expect(
+      agentInstructionsSafePutTool.handler(
+        {
+          agentId: "A1",
+          filePath: "SOUL.md",
+          content: "x",
+          changeSummary: "Update",
+          provenanceIssueId: "TOP-709",
+          runId: "run-1",
+        },
+        { client },
+      ),
+    ).rejects.toBe(apiError);
   });
 });

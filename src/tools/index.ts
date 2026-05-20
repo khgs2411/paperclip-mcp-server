@@ -97,6 +97,7 @@ import { skillDeleteTool } from "./skill-delete.js";
 // Group I — Board observability
 import { dashboardGetTool } from "./dashboard-get.js";
 import { activityCompanyTool } from "./activity-company.js";
+import { activitySummaryTool } from "./activity-summary.js";
 import { sidebarBadgesTool } from "./sidebar-badges.js";
 import { healthCheckTool } from "./health-check.js";
 import { boardSnapshotTool } from "./board-snapshot.js";
@@ -217,6 +218,7 @@ export const TOOLS: ToolDefinition<any>[] = [
   // Group I — Board observability
   dashboardGetTool,
   activityCompanyTool,
+  activitySummaryTool,
   sidebarBadgesTool,
   healthCheckTool,
   boardSnapshotTool,

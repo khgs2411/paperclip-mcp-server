@@ -91,6 +91,11 @@ const TOOL_RULES: Record<string, ToolRule> = {
     scope: "company_read",
     requiredProfile: "coordinator",
   },
+  paperclip_activity_summary: {
+    profiles: ["coordinator", "admin_read"],
+    scope: "company_read",
+    requiredProfile: "coordinator",
+  },
   paperclip_adapter_models_list: {
     profiles: ["admin_read", "admin_write"],
     scope: "admin_read",

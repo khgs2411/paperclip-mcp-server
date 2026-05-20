@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { ToolInputError } from "../shared/errors.js";
+import { PaperclipApiError, ToolInputError } from "../shared/errors.js";
 import type { ToolDefinition } from "./index.js";
 
 const inputSchema = z.object({
@@ -57,6 +57,11 @@ function asObject(value: unknown): Record<string, unknown> {
     : {};
 }
 
+function isOpaqueSafePutRunIdFailure(err: unknown): boolean {
+  const body = err instanceof PaperclipApiError ? asObject(err.body) : {};
+  return err instanceof PaperclipApiError && err.statusCode === 500 && body["error"] === "Internal server error";
+}
+
 export const agentInstructionsSafePutTool: ToolDefinition<typeof inputSchema> = {
   name: "paperclip_agent_instructions_safe_put",
   description:
@@ -65,20 +70,31 @@ export const agentInstructionsSafePutTool: ToolDefinition<typeof inputSchema> = 
   handler: async (input, { client }) => {
     const runId = assertSafeWriteInput(input);
     const companyId = client.resolveCompanyId(input.companyId);
-    const response = asObject(
-      await client.request(
-        "PUT",
-        `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}`,
-        {
-          path: input.filePath,
-          content: input.content,
-          changeSummary: input.changeSummary.trim(),
-          provenanceIssueId: input.provenanceIssueId.trim(),
-          runId,
-        },
-        { "X-Paperclip-Run-Id": runId },
-      ),
-    );
+    let response: Record<string, unknown>;
+    try {
+      response = asObject(
+        await client.request(
+          "PUT",
+          `/api/agents/${encodeURIComponent(input.agentId)}/instructions-bundle/file?companyId=${encodeURIComponent(companyId)}`,
+          {
+            path: input.filePath,
+            content: input.content,
+            changeSummary: input.changeSummary.trim(),
+            provenanceIssueId: input.provenanceIssueId.trim(),
+            runId,
+          },
+          { "X-Paperclip-Run-Id": runId },
+        ),
+      );
+    } catch (err) {
+      if (isOpaqueSafePutRunIdFailure(err)) {
+        throw new ToolInputError(
+          "runId",
+          "Paperclip safe_put returned an opaque 500; runId must reference an existing Paperclip run. For interactive edits, use PAPERCLIP_RUN_ID from a managed heartbeat or file_put until the Paperclip API supports a synthetic run id.",
+        );
+      }
+      throw err;
+    }
 
     return {
       agentId: input.agentId,
