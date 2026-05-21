@@ -37,6 +37,7 @@ type ToolScope =
   | "assigned_or_related_issue"
   | "status_patch"
   | "owned_parent"
+  | "atlas_routing_write"
   | "admin_read"
   | "admin_write";
 
@@ -150,9 +151,9 @@ const TOOL_RULES: Record<string, ToolRule> = {
   paperclip_agent_pause: adminWriteRule(),
   paperclip_agent_resume: adminWriteRule(),
   paperclip_agent_instructions_patch: adminWriteRule(),
-  paperclip_agent_instructions_file_put: adminWriteRule(),
+  paperclip_agent_instructions_file_put: atlasRoutingWriteRule(),
   paperclip_agent_instructions_file_delete: adminWriteRule(),
-  paperclip_agent_instructions_safe_put: adminWriteRule(),
+  paperclip_agent_instructions_safe_put: atlasRoutingWriteRule(),
   paperclip_member_set_grants: adminWriteRule(),
   paperclip_skill_sync: adminWriteRule(),
   paperclip_skill_delete: adminWriteRule(),
@@ -234,6 +235,14 @@ function adminWriteRule(): ToolRule {
   };
 }
 
+function atlasRoutingWriteRule(): ToolRule {
+  return {
+    profiles: [...READ_PROFILES, "admin_write"],
+    scope: "atlas_routing_write",
+    requiredProfile: "atlas_routing_write",
+  };
+}
+
 function denied(
   ctx: Extract<McpRuntimeContext, { mode: "managed_agent" }>,
   tool: string,
@@ -261,6 +270,18 @@ function authorizeScope(
 ): AccessDecision {
   if (rule.scope === "company_read" || rule.scope === "admin_read" || rule.scope === "admin_write") {
     return { allowed: true };
+  }
+
+  if (rule.scope === "atlas_routing_write") {
+    if (ctx.profile === "admin_write" || isHermodAtlasRoutingWrite(ctx, args)) {
+      return { allowed: true };
+    }
+    return denied(
+      ctx,
+      tool,
+      "atlas_routing_write",
+      "tool is scoped to Hermod updating Atlas ROUTING.md",
+    );
   }
 
   if (rule.scope === "status_patch") {
@@ -318,4 +339,19 @@ function isIssueArg(args: unknown, expectedIssueId: string): boolean {
 function getIssueArg(args: unknown): unknown {
   const input = args as Record<string, unknown> | undefined;
   return input?.["issueId"] ?? input?.["issueIdOrIdentifier"] ?? input?.["parentId"];
+}
+
+const HERMOD_AGENT_ID = "30ba0402-e469-4fe9-a794-2b4b8a0fc6d2";
+const ATLAS_AGENT_IDS = new Set(["89d5794e-a271-470f-a02c-636e6573ef92", "atlas"]);
+
+function isHermodAtlasRoutingWrite(
+  ctx: Extract<McpRuntimeContext, { mode: "managed_agent" }>,
+  args: unknown,
+): boolean {
+  if (ctx.agentId !== HERMOD_AGENT_ID) return false;
+
+  const input = args as Record<string, unknown> | undefined;
+  if (!input || Object.keys(input).length === 0) return true;
+
+  return input["filePath"] === "ROUTING.md" && ATLAS_AGENT_IDS.has(String(input["agentId"] ?? ""));
 }
