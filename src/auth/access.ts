@@ -153,7 +153,6 @@ const TOOL_RULES: Record<string, ToolRule> = {
   paperclip_agent_instructions_patch: adminWriteRule(),
   paperclip_agent_instructions_file_put: atlasRoutingWriteRule(),
   paperclip_agent_instructions_file_delete: adminWriteRule(),
-  paperclip_agent_instructions_safe_put: atlasRoutingWriteRule(),
   paperclip_member_set_grants: adminWriteRule(),
   paperclip_skill_sync: adminWriteRule(),
   paperclip_skill_delete: adminWriteRule(),

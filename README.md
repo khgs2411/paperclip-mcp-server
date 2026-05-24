@@ -110,9 +110,8 @@ Inbox tools (`paperclip_me_whoami`, `paperclip_inbox_*`) require an agent-scoped
 | `paperclip_agent_pause` | Pause an agent. |
 | `paperclip_agent_resume` | Resume a paused agent. |
 | `paperclip_agent_instructions_safe_get` | Safely inspect managed instructions. Default output is metadata, paths, sizes, hashes, and warnings; content readback requires `filePath`. |
-| `paperclip_agent_instructions_safe_put` | Guarded managed-instruction file write requiring provenance, change summary, and run audit metadata. |
 | `paperclip_agent_instructions_get` | Lower-level/admin: get the raw instructions bundle and may return full file bodies. Prefer `safe_get` for normal review. |
-| `paperclip_agent_instructions_patch` | Lower-level/admin: patch raw instruction sections. Prefer `safe_put` for single-file managed-instruction changes. |
+| `paperclip_agent_instructions_patch` | Lower-level/admin: patch raw instruction sections. |
 | `paperclip_agent_instructions_file_get` | Lower-level/admin: get a single raw file from an agent's instructions bundle. |
 | `paperclip_agent_instructions_file_put` | Lower-level/admin: write a raw file into an agent's instructions bundle without provenance guards. |
 | `paperclip_agent_instructions_file_delete` | Lower-level/admin: delete a file from an agent's instructions bundle. |
@@ -166,7 +165,7 @@ Inbox tools (`paperclip_me_whoami`, `paperclip_inbox_*`) require an agent-scoped
 
 ## Managed instruction safety
 
-Use `paperclip_agent_instructions_safe_get` and `paperclip_agent_instructions_safe_put` for managed-instruction work. `safe_get` does not return file content unless a single `filePath` is requested. `safe_put` rejects path traversal, empty change summaries, missing provenance, missing run audit ids, and live role/model/reasoning configuration paths; it also sends `X-Paperclip-Run-Id` to the Paperclip API.
+Use `paperclip_agent_instructions_safe_get` for managed-instruction review. It does not return file content unless a single `filePath` is requested.
 
 The older `paperclip_agent_instructions_*` tools remain for compatibility and admin/debugging. They are intentionally documented as lower-level because they can expose raw bundle payloads or write without the safer provenance wrapper.
 

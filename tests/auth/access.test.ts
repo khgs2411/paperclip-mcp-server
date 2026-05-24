@@ -10,7 +10,6 @@ const tools = [
   "paperclip_agent_skills_list",
   "paperclip_agent_skill_sync",
   "paperclip_agent_instructions_file_put",
-  "paperclip_agent_instructions_safe_put",
   "paperclip_agent_instructions_file_delete",
   "paperclip_project_delete",
 ];
@@ -36,7 +35,6 @@ describe("role-scoped MCP access decisions", () => {
     expect(visible).not.toContain("paperclip_agent_wakeup");
     expect(visible).not.toContain("paperclip_agent_skill_sync");
     expect(visible).not.toContain("paperclip_agent_instructions_file_put");
-    expect(visible).not.toContain("paperclip_agent_instructions_safe_put");
     expect(visible).not.toContain("paperclip_agent_instructions_file_delete");
     expect(visible).not.toContain("paperclip_project_delete");
   });
@@ -221,29 +219,6 @@ describe("role-scoped MCP access decisions", () => {
     expect(decision.allowed).toBe(true);
   });
 
-  it("allows Hermod to update Atlas ROUTING.md through safe_put", () => {
-    const decision = authorizeTool(
-      {
-        mode: "managed_agent",
-        profile: "coordinator",
-        agentId: "30ba0402-e469-4fe9-a794-2b4b8a0fc6d2",
-        runId: "run-hermod",
-        issueId: "TOP-718",
-      },
-      "paperclip_agent_instructions_safe_put",
-      {
-        agentId: "atlas",
-        filePath: "ROUTING.md",
-        content: "# routes",
-        changeSummary: "Update routing after hire",
-        provenanceIssueId: "TOP-718",
-        runId: "run-hermod",
-      },
-    );
-
-    expect(decision.allowed).toBe(true);
-  });
-
   it("does not let Hermod update other Atlas instruction files", () => {
     const decision = authorizeTool(
       {
@@ -346,7 +321,6 @@ describe("role-scoped MCP access decisions", () => {
     );
 
     expect(visible).toContain("paperclip_agent_instructions_file_put");
-    expect(visible).toContain("paperclip_agent_instructions_safe_put");
     expect(visible).not.toContain("paperclip_agent_instructions_file_delete");
   });
 
